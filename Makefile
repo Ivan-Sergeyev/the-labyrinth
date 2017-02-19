@@ -1,9 +1,9 @@
 all:
-	g++ screens.h main.cpp -lncurses -o main
+	g++ src/screens.h src/main.cpp -lncurses -o main
 	./main
 
 style_check:
-	python cpplint.py --filter=-legal/copyright,-build/include *.cpp *.h
+	python cpplint.py --filter=-legal/copyright,-build/include src/*.cpp src/*.h
 
 clean:
-	rm main *.gch
+	rm main src/*.gch
