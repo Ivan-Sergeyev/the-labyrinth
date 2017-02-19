@@ -1,5 +1,5 @@
-#ifndef TITLE_SCREEN_H_
-#define TITLE_SCREEN_H_
+#ifndef SRC_TITLE_SCREEN_H_
+#define SRC_TITLE_SCREEN_H_
 
 #include <ncurses.h>
 
@@ -73,4 +73,4 @@ SCREEN_ID title_screen() {
     }
 }
 
-#endif  // TITLE_SCREEN_H_
+#endif  // SRC_TITLE_SCREEN_H_

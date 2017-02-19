@@ -1,5 +1,5 @@
-#ifndef SCREENS_H_
-#define SCREENS_H_
+#ifndef SRC_SCREENS_H_
+#define SRC_SCREENS_H_
 
 enum SCREEN_ID {SC_EXIT = -1, SC_TITLE, SC_NUM_SCREENS};
 
@@ -7,4 +7,4 @@ enum SCREEN_ID {SC_EXIT = -1, SC_TITLE, SC_NUM_SCREENS};
 
 SCREEN_ID (* const screens[SC_NUM_SCREENS])() = {title_screen};
 
-#endif  // SCREENS_H_
+#endif  // SRC_SCREENS_H_
