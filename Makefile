@@ -6,4 +6,4 @@ style_check:
 	python cpplint.py --filter=-legal/copyright,-build/include src/*.cpp src/*.h
 
 clean:
-	rm main src/*.gch
+	rm main src/*.gch src/*.out
