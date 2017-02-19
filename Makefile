@@ -1,3 +1,3 @@
 all:
-	g++ main.cpp -lncurses -o main
+	g++ title_screen.h main.cpp -lncurses -o main
 	./main
