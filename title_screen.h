@@ -5,18 +5,20 @@
 
 #include "screens.h"
 
-enum TITLE_SCREEN_MENU_OPTIONS {TSM_START = 0, TSM_OPTIONS, TSM_QUIT, num_options};
-const char* const menu_options[num_options] = {"Start", "Options", "Quit"};
+enum TITLE_SCREEN_MENU_OPTIONS {
+    TSM_START = 0, TSM_OPTIONS, TSM_QUIT, TSM_NUM_OPTIONS
+}
+const char* const menu_options[TSM_NUM_OPTIONS] = {"Start", "Options", "Quit"};
 
 
 void draw_menu(int highlight) {
     int height, width;
     getmaxyx(stdscr, height, width);
 
-    int x = (width - num_options) / 2;
+    int x = (width - TSM_NUM_OPTIONS) / 2;
     int y = height / 2;
 
-    for (int i = 0; i < num_options; ++i) {
+    for (int i = 0; i < TSM_NUM_OPTIONS; ++i) {
         if (i == highlight) {
             attron(A_REVERSE);
             mvprintw(y, x, menu_options[i]);
@@ -46,7 +48,7 @@ SCREEN_ID title_screen() {
                 break;
             case KEY_ENTER:
             case 13:
-            case 10: // enter
+            case 10:  // enter
                 switch (highlight) {
                     case TSM_START:
                         return SC_EXIT;  // todo: SC_GAME
@@ -58,10 +60,10 @@ SCREEN_ID title_screen() {
                 }
                 break;
             case KEY_DOWN:
-                highlight = (highlight + 1) % num_options;
+                highlight = (highlight + 1) % TSM_NUM_OPTIONS;
                 break;
             case KEY_UP:
-                highlight = (num_options + highlight - 1) % num_options;
+                highlight = (TSM_NUM_OPTIONS + highlight - 1) % TSM_NUM_OPTIONS;
                 break;
         }
 
