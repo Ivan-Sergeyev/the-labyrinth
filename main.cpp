@@ -1,31 +1,30 @@
-#include "title_screen.h"
+#include "screens.h"
 
 
-enum SCREENS {SC_EXIT = -1, SC_TITLE};
-const int num_screens = 1;
-int (* const screens[num_screens])() = {title_screen};
-
-
-int main() {
+void init_ncurses_graphics() {
     initscr();
     raw();
     nonl();
     keypad(stdscr, 1);
     noecho();
     curs_set(0);
+}
 
-    int (*current_screen)() = screens[SC_TITLE];
-    int transition;
+
+int main() {
+    init_ncurses_graphics();
+
+    SCREEN_ID screen_cur = SC_TITLE;
+    SCREEN_ID screen_next;
 
     while (1) {
-        transition = current_screen() + 1;
+        screen_next = screens[screen_cur]();
 
-        if (!transition) {
+        if (screen_next == SC_EXIT) {
             break;
         }
 
-        break;
-        current_screen = screens[transition];
+        screen_cur = screen_next;
     }
 
     endwin();

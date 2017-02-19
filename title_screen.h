@@ -3,15 +3,18 @@
 
 #include <ncurses.h>
 
+#include "screens.h"
 
-enum MENU_OPTIONS {START, OPTIONS, QUIT};
-const int num_options = 3;
+enum TITLE_SCREEN_MENU_OPTIONS {TSM_START = 0, TSM_OPTIONS, TSM_QUIT, num_options};
 const char* const menu_options[num_options] = {"Start", "Options", "Quit"};
 
 
 void draw_menu(int highlight) {
-    int x = 70;
-    int y = 20;
+    int height, width;
+    getmaxyx(stdscr, height, width);
+
+    int x = (width - num_options) / 2;
+    int y = height / 2;
 
     for (int i = 0; i < num_options; ++i) {
         if (i == highlight) {
@@ -27,7 +30,7 @@ void draw_menu(int highlight) {
 }
 
 
-int title_screen() {
+SCREEN_ID title_screen() {
     int key = 0;
     int exit = 0;
     int enter = 0;
@@ -41,9 +44,18 @@ int title_screen() {
             case 27:  // escape
                 exit = 1;
                 break;
-            case 10: // enter
+            case KEY_ENTER:
             case 13:
-                enter = 1;
+            case 10: // enter
+                switch (highlight) {
+                    case TSM_START:
+                        return SC_EXIT;  // todo: SC_GAME
+                    case TSM_OPTIONS:
+                        return SC_EXIT;  // todo: SC_OPTIONS
+                    case TSM_QUIT:
+                        exit = 1;
+                        break;
+                }
                 break;
             case KEY_DOWN:
                 highlight = (highlight + 1) % num_options;
@@ -53,19 +65,8 @@ int title_screen() {
                 break;
         }
 
-        if (enter) {
-            switch (highlight) {
-                case START:
-                    return 1;
-                case OPTIONS:
-                    return 2;
-                case QUIT:
-                    exit = 1;
-                    break;
-            }
-        }
         if (exit) {
-            return -1;
+            return SC_EXIT;
         }
     }
 }
