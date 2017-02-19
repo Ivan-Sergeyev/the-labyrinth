@@ -13,6 +13,6 @@ class Treasure {
         x_pos = new_x;
         y_pos = new_y;
     }
-}
+};
 
 #endif  // SRC_TREASURE_H_

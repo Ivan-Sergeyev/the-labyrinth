@@ -31,8 +31,8 @@ class Player {
  public:
     Player(int x, int y) :
         _x_pos(x), _y_pos(y), _health(STARTING_HEALTH), _is_alive(1),
-        bombs(STARTING_BOMBS), bullets(STARTING_BULLETS),
-        knives(STARTING_KNIVES)
+        _bombs(STARTING_BOMBS), _bullets(STARTING_BULLETS),
+        _knives(STARTING_KNIVES)
         {}
 
     void take_damage(int amount = 1) {
@@ -74,6 +74,6 @@ class Player {
         _has_treasure = 1;
         _treasure = treasure;
     }
-}
+};
 
 #endif  // SRC_PLAYER_H_
