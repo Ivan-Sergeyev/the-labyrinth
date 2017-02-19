@@ -5,7 +5,7 @@ ACTIONS get_action() {
     unsigned int action = 0;
     scanf("%u", &action);
 
-    return (action <= 4) ? action : -1;
+    return (action <= 4) ? (ACTIONS) action : (ACTIONS) -1;
 }
 
 #define _STATE(dx, dy) \
