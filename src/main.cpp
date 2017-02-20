@@ -11,9 +11,7 @@ void init_ncurses_graphics() {
 }
 
 
-int main() {
-    init_ncurses_graphics();
-
+void main_loop() {
     SCREEN_ID screen_cur = SC_TITLE;
     SCREEN_ID screen_next;
 
@@ -26,7 +24,17 @@ int main() {
 
         screen_cur = screen_next;
     }
+}
 
+
+void quit_ncurses_graphics() {
     endwin();
+}
+
+
+int main() {
+    init_ncurses_graphics();
+    main_loop();
+    quit_ncurses_graphics();
     return 0;
 }

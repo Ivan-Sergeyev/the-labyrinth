@@ -1,5 +1,5 @@
-#ifndef TITLE_SCREEN_H_
-#define TITLE_SCREEN_H_
+#ifndef SRC_TITLE_SCREEN_H_
+#define SRC_TITLE_SCREEN_H_
 
 #include <ncurses.h>
 
@@ -7,7 +7,7 @@
 
 enum TITLE_SCREEN_MENU_OPTIONS {
     TSM_START = 0, TSM_OPTIONS, TSM_QUIT, TSM_NUM_OPTIONS
-}
+};
 const char* const menu_options[TSM_NUM_OPTIONS] = {"Start", "Options", "Quit"};
 
 
@@ -73,4 +73,4 @@ SCREEN_ID title_screen() {
     }
 }
 
-#endif  // TITLE_SCREEN_H_
+#endif  // SRC_TITLE_SCREEN_H_
