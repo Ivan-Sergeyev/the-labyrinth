@@ -3,6 +3,8 @@
 
 #include <algorithm>
 
+using std::min;
+
 #include "treasure.h"
 
 
@@ -20,8 +22,32 @@
 
 enum PLAYER_HEALTH_STATES {PHS_ERROR = -1, PHS_DEAD, PHS_WOUNDED,
                            PHS_WELL, PHS_USED_RANGE, PHS_NUM_STATES};
+
 const int HEALTH_RANGES[PHS_NUM_STATES][2] = \
     {{-1, -1}, {0, 0}, {1, 1}, {0, 1}};
+
+
+enum PLAYER_ACTIONS {
+    ACT_SKIP = 0, ACT_MOVE,
+    ACT_MELEE, ACT_SHOOT, ACT_BOMB
+};
+
+// todo : properly share directions with map_tile.h
+#ifndef DEF_DIRECTIONS_
+#define DEF_DIRECTIONS_
+
+enum DIRECTIONS {
+    DIR_NONE = -1, DIR_LEFT, DIR_UP, DIR_DOWN, DIR_RIHGT, DIR_NUM_DIRECTIONS
+};
+
+#endif  // DEF_DIRECTIONS_
+
+enum OUTCOMES {
+    OUT_SKIP = 0,
+    OUT_PASS, OUT_WALL,
+    OUT_WOUND, OUT_KILL,
+    OUT_BOMB_SUCCESS, OUT_BOMB_FAIL
+};
 
 
 // todo : move implementations to player.cpp
@@ -113,37 +139,37 @@ class Player {
     }
 
     int add_bombs(int amount) {
-        int bombs_added = std::min(MAX_BOMBS - _bombs, amount);
+        int bombs_added = min(MAX_BOMBS - _bombs, amount);
         _bombs += bombs_added;
         return bombs_added;
     }
 
     int add_bullets(int amount) {
-        int bullets_added = std::min(MAX_BULLETS - _bullets, amount);
+        int bullets_added = min(MAX_BULLETS - _bullets, amount);
         _bullets += bullets_added;
         return bullets_added;
     }
 
     int add_knives(int amount) {
-        int knives_added = std::min(MAX_KNIVES - _knives, amount);
+        int knives_added = min(MAX_KNIVES - _knives, amount);
         _knives += knives_added;
         return knives_added;
     }
 
     int remove_bombs(int amount) {
-        int bombs_removed = std::min(_bombs, amount);
+        int bombs_removed = min(_bombs, amount);
         _bombs -= bombs_removed;
         return bombs_removed;
     }
 
     int remove_bullets(int amount) {
-        int bullets_removed = std::min(_bullets, amount);
+        int bullets_removed = min(_bullets, amount);
         _bullets -= bullets_removed;
         return bullets_removed;
     }
 
     int remove_knives(int amount) {
-        int knives_removed = std::min(_knives, amount);
+        int knives_removed = min(_knives, amount);
         _knives -= knives_removed;
         return knives_removed;
     }
