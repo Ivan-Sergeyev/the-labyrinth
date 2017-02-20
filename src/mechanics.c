@@ -27,11 +27,11 @@ unsigned int do_action(ACTIONS action, Maze* maze)
 #define _ACTION_CHK(ac,dx,dy)                                           \
 	if(action == ac)                                                \
 	{                                                               \
-		if((0 > maze->player_x + dx) &&                         \
-			(maze->player_x + dx >= MAZE_SIZE))             \
+		if((0 > (maze->player_x + dx)) ||                       \
+			((maze->player_x + dx) >= MAZE_SIZE))           \
 			{puts("escape"); return RS_ESCAPE;}             \
-		if((0 > maze->player_y + dy) &&                         \
-			(maze->player_y + dy >= MAZE_SIZE))             \
+		if((0 > (maze->player_y + dy)) ||                       \
+			((maze->player_y + dy) >= MAZE_SIZE))           \
 			{puts("escape"); return RS_ESCAPE;}             \
 		if(_STATE(dx,dy) == ST_WALL)                            \
 			{puts("wall"); return RS_WALL;}                 \
@@ -106,17 +106,28 @@ int print_maze(Maze* maze)
 
 int create_maze(Maze* maze)
 {
-	int i = 0;
-	for(i = 0; i < 10; i++)
+	char chr_tr[5] = "FRWH";
+	int  int_tr[5] = { ST_FREE, ST_RIVER, ST_WALL, ST_HOLE, -1};
+
+	FILE* input = NULL;
+	input = fopen("test.maze", "r");
+
+	fscanf(input, "%d %d ", &maze->player_x, &maze->player_y);
+	
+	int x = 0;
+	int y = 0;
+	for( y = 0; y < MAZE_SIZE; y++)
 	{
-		maze->maze[i][0] = ST_WALL;
-		maze->maze[i][9] = ST_WALL;
-		maze->maze[0][i] = ST_WALL;
-		maze->maze[9][i] = ST_WALL;
+		for( x = 0; x < MAZE_SIZE; x++)
+		{
+			char c;
+			fscanf(input, "%c", &c);
+			int i = 0;
+			for( ; i < 5; i++)
+				if(c == chr_tr[i]) break;
+
+			maze->maze[x][y] = int_tr[i];
+		}
+		fscanf(input, "%*c");
 	}
-
-	maze->maze[2][9] = ST_FREE;
-
-	maze->player_x = 6;
-	maze->player_y = 5;
 }
