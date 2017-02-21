@@ -1,8 +1,6 @@
 #ifndef SRC_0_SCREEN_MAIN_MENU_H_
 #define SRC_0_SCREEN_MAIN_MENU_H_
 
-#include <ncurses.h>
-
 #include "screens.h"
 
 
@@ -35,8 +33,7 @@ void draw_menu(int highlight) {
 
 SCREEN_ID main_menu() {
     int key = 0;
-    int exit = 0;
-    int enter = 0;
+    bool exit = false;
     int highlight = 0;
 
     while (1) {
@@ -45,16 +42,16 @@ SCREEN_ID main_menu() {
         key = getch();
         switch (key) {
             case 27:  // escape
-                exit = 1;
+                exit = true;
                 break;
             case KEY_ENTER:
             case 13:
             case 10:  // enter
                 switch (highlight) {
                     case MM_NEW_GAME:
-                        return SC_EXIT;  // todo: SC_GAME
+                        return SC_GAME;
                     case MM_EXIT:
-                        exit = 1;
+                        exit = true;
                         break;
                 }
                 break;

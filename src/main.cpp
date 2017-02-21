@@ -12,10 +12,11 @@ void init_ncurses_graphics() {
 
 
 void main_loop() {
-    SCREEN_ID screen_cur = SC_TITLE;
+    SCREEN_ID screen_cur = SC_FIRST;
     SCREEN_ID screen_next;
 
     while (1) {
+        clear();
         screen_next = screens[screen_cur]();
 
         if (screen_next == SC_EXIT) {
