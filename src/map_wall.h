@@ -3,6 +3,7 @@
 
 #include "directions.h"
 
+
 enum MAP_WALL_TYPES {
     WT_UNDEFINED = -1,
     WT_DESTRUCTIBLE, WT_INDESTRUCTIBLE, WT_MONOLYTH
@@ -29,8 +30,8 @@ class MapWall {
     bool get_enabled() const;
 
     bool exists() const;
-    bool has_direction(DIRECTIONS direction) const;
-    bool collides(DIRECTIONS direction) const;
+    bool has_direction(DIRECTIONS dir) const;
+    bool collides(DIRECTIONS dir) const;
 
     bool destroy();
 };

@@ -21,8 +21,8 @@ class MapTile {
     MAP_TILE_TYPES _type;
     vector <MapWall> walls;
 
-    vector <MapWall>::const_iterator find_wall(DIRECTIONS direction) const;
-    vector <MapWall>::iterator find_wall(DIRECTIONS direction);
+    vector <MapWall>::const_iterator find_wall(DIRECTIONS dir) const;
+    vector <MapWall>::iterator find_wall(DIRECTIONS dir);
 
  public:
     MapTile();
@@ -32,10 +32,10 @@ class MapTile {
 
     MAP_TILE_TYPES get_type() const;
 
-    bool has_wall(DIRECTIONS direction) const;
+    bool has_wall(DIRECTIONS dir) const;
     bool add_wall(MapWall wall);
 
-    bool destroy_wall_in_direction(DIRECTIONS direction);
+    bool destroy_wall_in_direction(DIRECTIONS dir);
 };
 
 #endif  // SRC_MAP_TILE_H_

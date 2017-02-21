@@ -1,20 +1,20 @@
 #include "map_tile.h"
 
 
-vector <MapWall>::const_iterator MapTile::find_wall(DIRECTIONS direction) const {
+vector <MapWall>::const_iterator MapTile::find_wall(DIRECTIONS dir) const {
     vector <MapWall>::const_iterator it;
     for (it = walls.begin(); it < walls.end(); ++it) {
-        if (it->collides(direction)) {
+        if (it->collides(dir)) {
             return it;
         }
     }
     return walls.end();
 }
 
-vector <MapWall>::iterator MapTile::find_wall(DIRECTIONS direction) {
+vector <MapWall>::iterator MapTile::find_wall(DIRECTIONS dir) {
     vector <MapWall>::iterator it;
     for (it = walls.begin(); it < walls.end(); ++it) {
-        if (it->collides(direction)) {
+        if (it->collides(dir)) {
             return it;
         }
     }
@@ -34,8 +34,8 @@ MAP_TILE_TYPES MapTile::get_type() const {
     return _type;
 }
 
-bool MapTile::has_wall(DIRECTIONS direction) const {
-    return find_wall(direction) != walls.end();
+bool MapTile::has_wall(DIRECTIONS dir) const {
+    return find_wall(dir) != walls.end();
 }
 
 bool MapTile::add_wall(MapWall wall) {
@@ -46,8 +46,8 @@ bool MapTile::add_wall(MapWall wall) {
     return false;
 }
 
-bool MapTile::destroy_wall_in_direction(DIRECTIONS direction) {
-    vector <MapWall>::iterator it = find_wall(direction);
+bool MapTile::destroy_wall_in_direction(DIRECTIONS dir) {
+    vector <MapWall>::iterator it = find_wall(dir);
     if (it == walls.end()) {
         return false;
     }

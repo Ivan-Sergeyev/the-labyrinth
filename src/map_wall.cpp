@@ -41,12 +41,12 @@ bool MapWall::exists() const {
     return _direction != DIR_NONE && _type != WT_UNDEFINED && _enabled;
 }
 
-bool MapWall::has_direction(DIRECTIONS direction) const {
-    return _direction == direction;
+bool MapWall::has_direction(DIRECTIONS dir) const {
+    return _direction == dir;
 }
 
-bool MapWall::collides(DIRECTIONS direction) const {
-    return exists() && has_direction(direction);
+bool MapWall::collides(DIRECTIONS dir) const {
+    return exists() && has_direction(dir);
 }
 
 bool MapWall::destroy() {
