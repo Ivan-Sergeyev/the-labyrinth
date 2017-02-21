@@ -1,5 +1,5 @@
 all:
-	g++ src/screens.h src/main.cpp -lncurses -o main
+	g++ src/screens.h src/main.cpp -std=gnu++11 -lncurses -o main
 	./main
 
 style_check:
