@@ -1,20 +1,11 @@
 #ifndef SRC_MAP_TILE_H_
 #define SRC_MAP_TILE_H_
 
+#include "directions.h"
 #include <vector>
 
 using std::vector;
 
-
-// todo : properly share directions with player.h
-#ifndef DEF_DIRECTIONS_
-#define DEF_DIRECTIONS_
-
-enum DIRECTIONS {
-    DIR_NONE = -1, DIR_LEFT, DIR_UP, DIR_DOWN, DIR_RIHGT, DIR_NUM_DIRECTIONS
-};
-
-#endif  // DEF_DIRECTIONS_
 
 enum WALL_TYPES {
     WT_UNDEFINED = -1,
@@ -31,7 +22,7 @@ class Wall{
     void _clear() {
         _direction = DIR_NONE;
         _type = WT_UNDEFINED;
-        _enabled = 0;
+        _enabled = false; //bool doesn't have 0 state, you meant false
     }
 
  public:
@@ -39,7 +30,7 @@ class Wall{
         _clear();
     }
 
-    Wall(DIRECTIONS dir, WALL_TYPES type, bool enabled = 1) :
+    Wall(DIRECTIONS dir, WALL_TYPES type, bool enabled = true) : //same about bool
         _direction(dir), _type(type), _enabled(enabled)
         {}
 
@@ -79,10 +70,10 @@ class Wall{
 
     bool destroy() {
         if (!exists()) {
-            return 0;
+            return false;
         }
-        _enabled = 0;
-        return 1;
+        _enabled = false;
+        return true;
     }
 };
 
@@ -141,18 +132,18 @@ class MapTile {
     bool add_wall(Wall wall) {
         if (!has_wall(wall.get_direction())) {
             walls.push_back(wall);
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
     bool destroy_wall_in_direction(DIRECTIONS direction) {
         vector <Wall>::iterator it = find_wall(direction);
         if (it == walls.end()) {
-            return 0;
+            return false;
         }
         it->destroy();
-        return 1;
+        return true;
     }
 };
 
