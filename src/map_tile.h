@@ -1,11 +1,7 @@
 #ifndef SRC_MAP_TILE_H_
 #define SRC_MAP_TILE_H_
 
-#include <vector>
-
 #include "map_wall.h"
-
-using std::vector;
 
 
 enum MAP_TILE_TYPES {
@@ -19,16 +15,11 @@ enum MAP_TILE_TYPES {
 class MapTile {
  private:
     MAP_TILE_TYPES _type;
-    vector <MapWall> walls;
-
-    vector <MapWall>::const_iterator find_wall(DIRECTIONS dir) const;
-    vector <MapWall>::iterator find_wall(DIRECTIONS dir);
+    MapWall walls[DIR_NUM_DIRECTIONS];
 
  public:
     MapTile();
     explicit MapTile(MAP_TILE_TYPES type);
-
-    ~MapTile();
 
     MAP_TILE_TYPES get_type() const;
 
