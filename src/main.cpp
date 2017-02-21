@@ -3,10 +3,9 @@
 
 void init_ncurses_graphics() {
     initscr();
-    raw();
+    cbreak();
     nonl();
     keypad(stdscr, 1);
-    noecho();
     curs_set(0);
 }
 

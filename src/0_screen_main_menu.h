@@ -32,6 +32,8 @@ void draw_menu(int highlight) {
 
 
 SCREEN_ID main_menu() {
+    noecho();
+
     int key = 0;
     bool exit = false;
     int highlight = 0;
