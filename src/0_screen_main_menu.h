@@ -1,24 +1,25 @@
-#ifndef SRC_TITLE_SCREEN_H_
-#define SRC_TITLE_SCREEN_H_
+#ifndef SRC_0_SCREEN_MAIN_MENU_H_
+#define SRC_0_SCREEN_MAIN_MENU_H_
 
 #include <ncurses.h>
 
 #include "screens.h"
 
-enum TITLE_SCREEN_MENU_OPTIONS {
-    TSM_START = 0, TSM_OPTIONS, TSM_QUIT, TSM_NUM_OPTIONS
+
+enum MAIN_MENU_BUTTONS {
+    MM_NEW_GAME = 0, MM_EXIT, MM_NUM_BUTTONS
 };
-const char* const menu_options[TSM_NUM_OPTIONS] = {"Start", "Options", "Quit"};
+const char* const menu_options[MM_NUM_BUTTONS] = {"New Game", "Exit"};
 
 
 void draw_menu(int highlight) {
     int height, width;
     getmaxyx(stdscr, height, width);
 
-    int x = (width - TSM_NUM_OPTIONS) / 2;
+    int x = (width - MM_NUM_BUTTONS) / 2;
     int y = height / 2;
 
-    for (int i = 0; i < TSM_NUM_OPTIONS; ++i) {
+    for (int i = 0; i < MM_NUM_BUTTONS; ++i) {
         if (i == highlight) {
             attron(A_REVERSE);
             mvprintw(y, x, menu_options[i]);
@@ -32,7 +33,7 @@ void draw_menu(int highlight) {
 }
 
 
-SCREEN_ID title_screen() {
+SCREEN_ID main_menu() {
     int key = 0;
     int exit = 0;
     int enter = 0;
@@ -50,20 +51,18 @@ SCREEN_ID title_screen() {
             case 13:
             case 10:  // enter
                 switch (highlight) {
-                    case TSM_START:
+                    case MM_NEW_GAME:
                         return SC_EXIT;  // todo: SC_GAME
-                    case TSM_OPTIONS:
-                        return SC_EXIT;  // todo: SC_OPTIONS
-                    case TSM_QUIT:
+                    case MM_EXIT:
                         exit = 1;
                         break;
                 }
                 break;
             case KEY_DOWN:
-                highlight = (highlight + 1) % TSM_NUM_OPTIONS;
+                highlight = (highlight + 1) % MM_NUM_BUTTONS;
                 break;
             case KEY_UP:
-                highlight = (TSM_NUM_OPTIONS + highlight - 1) % TSM_NUM_OPTIONS;
+                highlight = (MM_NUM_BUTTONS + highlight - 1) % MM_NUM_BUTTONS;
                 break;
         }
 
@@ -73,4 +72,4 @@ SCREEN_ID title_screen() {
     }
 }
 
-#endif  // SRC_TITLE_SCREEN_H_
+#endif  // SRC_0_SCREEN_MAIN_MENU_H_
