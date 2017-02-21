@@ -21,7 +21,7 @@ int Player::_health_in_range(int health) const {
 Player::Player(int x, int y) :
     _x_pos(x), _y_pos(y), _health(HEALTH_START),
     _bombs(START_BOMBS), _bullets(START_BULLETS), _knives(START_KNIVES),
-    _has_treasure(false), _treasure(NULL)
+    _has_treasure(false), _treasure(nullptr)
     {}
 
 int Player::get_x_pos() const {
