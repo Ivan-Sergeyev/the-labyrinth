@@ -6,5 +6,3 @@ enum DIRECTIONS {
 };
 
 #endif  // SRC_DIRECTIONS_H_
-
-
