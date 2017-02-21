@@ -2,24 +2,20 @@
 
 
 PLAYER_HEALTH_STATES Player::_get_health_state() const {
-    int state;
-    for (state = PHS_DEAD; state != PHS_USED_RANGE; ++state) {
-        if (HEALTH_RANGES[state][0] <= _health &&
-            HEALTH_RANGES[state][1] >= _health) {
-            return (PLAYER_HEALTH_STATES) state;
-        }
+    if (_health == HEALTH_MAX) {
+        return PHS_WELL;
+    }
+    if (_health == HEALTH_DEATH) {
+        return PHS_DEAD;
+    }
+    if (_health > HEALTH_DEATH && _health < HEALTH_MAX) {
+        return PHS_WOUNDED;
     }
     return PHS_ERROR;
 }
 
 int Player::_health_in_range(int health) const {
-    if (health < HEALTH_RANGES[PHS_USED_RANGE][0]) {
-        return HEALTH_RANGES[PHS_USED_RANGE][0];
-    }
-    if (health > HEALTH_RANGES[PHS_USED_RANGE][1]) {
-        return HEALTH_RANGES[PHS_USED_RANGE][1];
-    }
-    return health;
+    return max(min(health, HEALTH_MAX), HEALTH_MIN);
 }
 
 Player::Player(int x, int y) :

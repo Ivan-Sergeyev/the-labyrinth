@@ -7,6 +7,7 @@
 #include "treasure.h"
 
 
+using std::max;
 using std::min;
 
 
@@ -18,14 +19,13 @@ using std::min;
 #define START_BULLETS 0
 #define START_KNIVES 0
 
-#define HEALTH_START 1
-
+#define HEALTH_MAX 2
+#define HEALTH_MIN 1
+#define HEALTH_DEATH 0
+#define HEALTH_START 2
 
 enum PLAYER_HEALTH_STATES {PHS_ERROR = -1, PHS_DEAD, PHS_WOUNDED,
                            PHS_WELL, PHS_USED_RANGE, PHS_NUM_STATES};
-
-const int HEALTH_RANGES[PHS_NUM_STATES][2] = \
-    {{-1, -1}, {0, 0}, {1, 1}, {0, 1}};
 
 
 enum PLAYER_ACTIONS {
@@ -70,8 +70,8 @@ class Player {
 
     void move(int new_x, int new_y);
 
-    void take_damage(int amount = 1);
-    void heal(int amount = 1);
+    void take_damage(int amount);
+    void heal(int amount);
 
     int add_bombs(int amount);
     int add_bullets(int amount);
