@@ -47,15 +47,16 @@ SCREEN_ID game() {
     int key;
     bool exit = false;
 
-    int MAX_MSG_LEN = msg_in_w - 4;
+    int MAX_MSG_LEN = msg_in_w - 4 + 1;
     int MAX_HISTORY_LEN = msg_out_h - 2;
 
     char str[MAX_MSG_LEN];
     char msg_history[MAX_HISTORY_LEN][MAX_MSG_LEN];
+    int msg_oldest_idx = 0;
 
-    str[0] = 0;
+    memset(str, 0, MAX_MSG_LEN);
     for (int i = 0; i < MAX_HISTORY_LEN; ++i) {
-        msg_history[i][0] = 0;
+        memset(msg_history[i], 0, MAX_MSG_LEN);
     }
 
     while (1) {
@@ -68,7 +69,9 @@ SCREEN_ID game() {
         wclear(msg_out);
         box(msg_out, 0, 0);
         for (int i = 0; i < MAX_HISTORY_LEN; ++i) {
-            mvwprintw(msg_out, msg_out_h - 2 - i, 1, msg_history[i]);
+            int history_out_y = i + MAX_HISTORY_LEN - msg_oldest_idx;
+            history_out_y = history_out_y % MAX_HISTORY_LEN;
+            mvwprintw(msg_out, 1 + history_out_y, 2, msg_history[i]);
         }
         wrefresh(msg_out);
 
@@ -77,7 +80,7 @@ SCREEN_ID game() {
         mvwprintw(msg_in, 1, 1, "> ");
         wrefresh(msg_in);
 
-        wgetnstr(msg_in, str, MAX_MSG_LEN);
+        wgetnstr(msg_in, str, MAX_MSG_LEN - 1);
 
         exit = process_input(str, MAX_MSG_LEN);
 
@@ -88,10 +91,8 @@ SCREEN_ID game() {
             return SC_EXIT;
         }
 
-        for (int i = MAX_HISTORY_LEN - 1; i > 0; --i) {
-            strncpy(msg_history[i], msg_history[i - 1], MAX_MSG_LEN);
-        }
-        strncpy(msg_history[0], str, MAX_MSG_LEN);
+        strncpy(msg_history[msg_oldest_idx], str, MAX_MSG_LEN);
+        msg_oldest_idx = (msg_oldest_idx + 1) % MAX_HISTORY_LEN;
     }
 }
 
