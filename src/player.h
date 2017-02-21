@@ -1,12 +1,13 @@
 #ifndef SRC_PLAYER_H_
 #define SRC_PLAYER_H_
 
-#include "directions.h"
 #include <algorithm>
 
-using std::min;
-
+#include "directions.h"
 #include "treasure.h"
+
+
+using std::min;
 
 
 #define MAX_BOMBS 3
@@ -40,7 +41,6 @@ enum OUTCOMES {
 };
 
 
-// todo : move implementations to player.cpp
 class Player {
  private:
     int _x_pos, _y_pos;
@@ -52,10 +52,10 @@ class Player {
     bool _has_treasure;
     Treasure *_treasure;
 
-    PLAYER_HEALTH_STATES _get_health_state() const; 
+    PLAYER_HEALTH_STATES _get_health_state() const;
     int _health_in_range(int health) const;
 
-public:
+ public:
     Player(int x, int y);
 
     int get_x_pos() const;
@@ -67,15 +67,19 @@ public:
     int get_knives() const;
     bool has_treasure() const;
     Treasure* carried_treasure() const;
+
     void move(int new_x, int new_y);
+
     void take_damage(int amount = 1);
     void heal(int amount = 1);
+
     int add_bombs(int amount);
     int add_bullets(int amount);
     int add_knives(int amount);
     int remove_bombs(int amount);
     int remove_bullets(int amount);
     int remove_knives(int amount);
+
     bool add_treasure(Treasure *treasure);
 };
 

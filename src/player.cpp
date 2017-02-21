@@ -1,22 +1,23 @@
 #include "player.h"
 
+
 PLAYER_HEALTH_STATES Player::_get_health_state() const {
     int state;
     for (state = PHS_DEAD; state != PHS_USED_RANGE; ++state) {
-	if (HEALTH_RANGES[0][state] <= _health &&  //state and 0 should be swapped: const int HEALTH_RANGES[PHS_NUM_STATES][2] = 
-	    HEALTH_RANGES[1][state] >= _health) {
-	    return (PLAYER_HEALTH_STATES) state;
-	}
+        if (HEALTH_RANGES[state][0] <= _health &&
+            HEALTH_RANGES[state][1] >= _health) {
+            return (PLAYER_HEALTH_STATES) state;
+        }
     }
     return PHS_ERROR;
 }
 
 int Player::_health_in_range(int health) const {
-    if (health < HEALTH_RANGES[0][PHS_USED_RANGE]) {
-	return HEALTH_RANGES[0][PHS_USED_RANGE];
+    if (health < HEALTH_RANGES[PHS_USED_RANGE][0]) {
+        return HEALTH_RANGES[PHS_USED_RANGE][0];
     }
-    if (health > HEALTH_RANGES[1][PHS_USED_RANGE]) {
-	return HEALTH_RANGES[1][PHS_USED_RANGE];
+    if (health > HEALTH_RANGES[PHS_USED_RANGE][1]) {
+        return HEALTH_RANGES[PHS_USED_RANGE][1];
     }
     return health;
 }
@@ -24,9 +25,8 @@ int Player::_health_in_range(int health) const {
 Player::Player(int x, int y) :
     _x_pos(x), _y_pos(y), _health(HEALTH_START),
     _bombs(START_BOMBS), _bullets(START_BULLETS), _knives(START_KNIVES),
-    _has_treasure(false), _treasure(nullptr) //bool has no 0 state, pointers have no 0 state
+    _has_treasure(false), _treasure(NULL)
     {}
-
 
 int Player::get_x_pos() const {
     return _x_pos;
@@ -59,7 +59,6 @@ bool Player::has_treasure() const {
 Treasure* Player::carried_treasure() const {
     return _treasure;
 }
-
 
 void Player::move(int new_x, int new_y) {
     _x_pos = new_x;
@@ -112,7 +111,7 @@ int Player::remove_knives(int amount) {
 
 bool Player::add_treasure(Treasure *treasure) {
     if (_has_treasure || _get_health_state() != PHS_WELL) {
-	return false;
+        return false;
     }
 
     _has_treasure = true;
