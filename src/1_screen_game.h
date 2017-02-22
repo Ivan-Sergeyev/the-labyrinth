@@ -2,13 +2,47 @@
 #define SRC_1_SCREEN_GAME_H_
 
 #include <string.h>
+#include <stdio.h>
 #include <ncurses.h>
+
 
 #include "screens.h"
 #include "message_windows.h"
 
 #include "gamestate.h"
 #include "player.h"
+
+
+using std::pair;
+
+
+pair<PLAYER_ACTIONS, DIRECTIONS> parse_input(char *str, int len) {
+    PLAYER_ACTIONS action = ACT_NONE;
+    DIRECTIONS direction = DIR_NONE;
+
+    char *word1 = new char[len];
+    char *word2 = new char[len];
+    sscanf(str, "%s %s", word1, word2);
+
+    for(int i = 0; i < ACT_NUM_ACTIONS; ++i) {
+        if (!strcmp(player_actions_strings[i], word1)) {
+            action = (PLAYER_ACTIONS)i;
+            break;
+        }
+    }
+
+    for(int i = 0; i < DIR_NUM_DIRECTIONS; ++i) {
+        if (!strcmp(directions_strings[i], word2)) {
+            direction = (DIRECTIONS)i;
+            break;
+        }
+    }
+
+    delete[] word1;
+    delete[] word2;
+
+    return pair<PLAYER_ACTIONS, DIRECTIONS> (action, direction);
+}
 
 
 SCREEN_ID game() {
@@ -43,6 +77,7 @@ SCREEN_ID game() {
                                 _MAX_HISTORY_LEN, _MAX_MSG_LEN);
 
     bool exit = false;
+    Gamestate gamestate;
 
     while (1) {
         refresh();
@@ -52,6 +87,7 @@ SCREEN_ID game() {
 
         char* msg = _msg_in.input();
         _msg_hstr.add_msg(msg);
+
         exit = !strncmp(msg, "exit", _MAX_MSG_LEN);
 
         if (exit) {

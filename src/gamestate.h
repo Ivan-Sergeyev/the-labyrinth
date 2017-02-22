@@ -8,31 +8,53 @@
 class Gamestate {
  private:
     int _x_size, _y_size;
-    MapTile **_tiles;
-
-    int _num_treasures;
-    Treasure *_treasures;
 
     int _num_players;
-    Player *_players;
+    int _num_treasures;
 
-    // todo : add other fields, e.g. list of exits
+    MapTile **_tiles;
+    Treasure *_treasures;
+
+    Player *_players;
 
  public:
     Gamestate() :
         _x_size(0), _y_size(0), _tiles(0),
-        _num_treasures(0), _treasures(0),
-        _num_players(0), _players(0)
+        _num_treasures(0), _treasures(nullptr),
+        _num_players(0), _players(nullptr)
         {}
 
-    void generate_map(int x_size, int y_size) {
-        // todo : add other parameters -- number of special tiles of each type,
-        //        number of treasures, etc.
+    ~Gamestate() {
+        if (_tiles) {
+            for(int i = 0; i < _x_size; ++i) {
+                delete[] _tiles[i];
+            }
+            delete[] _tiles;
+        }
+
+        delete[] _treasures;
+        delete[] _players;
     }
 
-    void draw_ncurses() {
-        // todo : draw map
-        // todo : different draw methods: e.g. messages only
+    void init(int x_size, int y_size, int num_treasures,
+              int num_players, const Player *players) {
+        _x_size = x_size;
+        _y_size = y_size;
+        _tiles = new MapTile*[_x_size];
+        for(int i = 0; i < _x_size; ++i) {
+            _tiles[i] = new MapTile[_y_size];
+        }
+
+        _num_treasures = num_treasures;
+        _treasures = new Treasure[num_treasures];
+
+        _num_players = num_players;
+        _players = new Player[num_players];
+    }
+
+    void generate_map() {
+        // todo : add other parameters -- number of special tiles of each type,
+        //        number of treasures, etc.
     }
 
     void attempt_move() {

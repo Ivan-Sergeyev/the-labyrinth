@@ -5,4 +5,8 @@ enum DIRECTIONS {
     DIR_NONE = -1, DIR_LEFT, DIR_UP, DIR_DOWN, DIR_RIHGT, DIR_NUM_DIRECTIONS
 };
 
+const char directions_strings[DIR_NUM_DIRECTIONS][6] = {
+    "left", "up", "down", "right"
+};
+
 #endif  // SRC_DIRECTIONS_H_

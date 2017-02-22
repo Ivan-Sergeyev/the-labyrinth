@@ -24,13 +24,19 @@ using std::min;
 #define HEALTH_DEATH 0
 #define HEALTH_START 2
 
+
 enum PLAYER_HEALTH_STATES {PHS_ERROR = -1, PHS_DEAD, PHS_WOUNDED,
                            PHS_WELL, PHS_USED_RANGE, PHS_NUM_STATES};
 
-
 enum PLAYER_ACTIONS {
-    ACT_SKIP = 0, ACT_MOVE,
-    ACT_MELEE, ACT_SHOOT, ACT_BOMB
+    ACT_NONE = -1,
+    ACT_SKIP, ACT_MOVE,
+    ACT_KNIFE, ACT_SHOOT, ACT_BOMB,
+    ACT_NUM_ACTIONS
+};
+
+const char player_actions_strings[ACT_NUM_ACTIONS][6] = {
+    "skip", "move", "knife", "shoot", "bomb"
 };
 
 enum OUTCOMES {
@@ -56,7 +62,7 @@ class Player {
     int _health_in_range(int health) const;
 
  public:
-    Player(int x, int y);
+    Player();
 
     int get_x_pos() const;
     int get_y_pos() const;
@@ -68,8 +74,9 @@ class Player {
     bool has_treasure() const;
     Treasure* carried_treasure() const;
 
-    void move(int new_x, int new_y);
+    void set_pos(int x, int y);
 
+    void set_health(int amount);
     void take_damage(int amount);
     void heal(int amount);
 

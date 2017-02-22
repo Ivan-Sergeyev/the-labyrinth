@@ -18,11 +18,10 @@ int Player::_health_in_range(int health) const {
     return max(min(health, HEALTH_MAX), HEALTH_MIN);
 }
 
-Player::Player(int x, int y) :
-    _x_pos(x), _y_pos(y), _health(HEALTH_START),
-    _bombs(START_BOMBS), _bullets(START_BULLETS), _knives(START_KNIVES),
-    _has_treasure(false), _treasure(nullptr)
-    {}
+Player::Player() :
+    _x_pos(0), _y_pos(0), _health(0),
+    _bombs(0), _bullets(0), _knives(0),
+    _has_treasure(false), _treasure(nullptr) {}
 
 int Player::get_x_pos() const {
     return _x_pos;
@@ -56,9 +55,13 @@ Treasure* Player::carried_treasure() const {
     return _treasure;
 }
 
-void Player::move(int new_x, int new_y) {
-    _x_pos = new_x;
-    _y_pos = new_y;
+void Player::set_pos(int x, int y) {
+    _x_pos = x;
+    _y_pos = y;
+}
+
+void Player::set_health(int amount) {
+    _health = _health_in_range(amount);
 }
 
 void Player::take_damage(int amount) {

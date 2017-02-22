@@ -1,5 +1,5 @@
 all:
-	g++ src/screens.h src/main.cpp -std=gnu++11 -lncurses -o main
+	g++ src/map_wall.cpp src/map_tile.cpp src/player.cpp src/main.cpp -std=gnu++11 -lncurses -o main
 	./main
 
 style_check:

@@ -3,15 +3,20 @@
 
 class Treasure {
  private:
-    int is_fake;
-    int x_pos, y_pos;
+    int _is_fake;
+    int _x_pos, _y_pos;
 
  public:
-    Treasure(int x, int y, int fake = 0) : x_pos(x), y_pos(y), is_fake(fake) {}
+    Treasure() : _x_pos(0), _y_pos(0), _is_fake(false) {}
 
-    void move(int new_x, int new_y) {
-        x_pos = new_x;
-        y_pos = new_y;
+
+    void set_fake(int fake = true) {
+        _is_fake = fake;
+    }
+
+    void set_pos(int x, int y) {
+        _x_pos = x;
+        _y_pos = y;
     }
 };
 
