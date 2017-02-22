@@ -52,17 +52,33 @@ class Gamestate {
     }
 
     bool _has_wall(int x, int y, DIRECTIONS direction) {
-	return MapTile[x][y].has_wall(direction);
+	return _tiles[x][y].has_wall(direction);
     }
 
-    bool _has_other_players(int x, int y, int player_id) {
+    bool _wound_other_players(int x, int y, int player_id) {
+	bool _had_other_players = false;
 	for(int i = 0; i < _num_players; i++)
 	{
 	    if((_players[i]->get_x_pos() == x) &&
 	       (_players[i]->get_y_pos() == y) &&
-	       (i != player_id)) return true;
+	       (i != player_id)) {
+		_had_other_players = true;
+		_players[i]->take_damage(1);
+	    }
+
 	}
-	return false;
+	return _had_other_players;
+    }
+
+    bool _check_initialization()
+    {
+	if ((_x_size == 0) ||
+	    (_y_size == 0) ||
+	    (_tiles == nullptr) ||
+	    (_num_players == 0) ||
+	    (_players == nullptr))
+	    return false;
+	return true;
     }
 
  public:
@@ -121,10 +137,13 @@ class Gamestate {
     }
 
     OUTCOMES attempt_move(int player_id, player_move_t p_move) {
+	if (!_check_initialization()) {
+	    return OUT_INVALID;
+	}
         // todo : check if it is player's turn
 
         OUTCOMES outcome = OUT_INVALID;
-	Player player& = *_players[player_id];
+	Player &player = *_players[player_id];
 
         switch (p_move.action) {
         case ACT_NONE:
@@ -138,16 +157,16 @@ class Gamestate {
                 break;
             }
             // attempt to move player
-	    if (_has_wall(player.get_x_pos(), player.get_y_pos())) {
+	    if (_has_wall(player.get_x_pos(), player.get_y_pos(), p_move.direction)) {
             	outcome = OUT_WALL;
-	    {
+	    }
 	    else {
 		outcome = OUT_PASS;
 	    }
             break;
         case ACT_KNIFE:
             // attempt to use a knife
-	    if (!_has_other_players(player.get_x_pos(), player.get_y_pos())) {
+	    if (!_wound_other_players(player.get_x_pos(), player.get_y_pos(), player_id)) {
             	outcome = OUT_MISS;
             	break;
 	    }
