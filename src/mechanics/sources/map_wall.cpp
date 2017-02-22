@@ -1,4 +1,4 @@
-#include "map_wall.h"
+#include "../headers/map_wall.h"
 
 
 void MapWall::_clear() {

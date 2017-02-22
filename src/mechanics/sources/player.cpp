@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "player.h"
+#include "../headers/player.h"
 
 using std::max;
 using std::min;

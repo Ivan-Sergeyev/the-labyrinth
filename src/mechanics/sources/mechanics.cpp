@@ -1,4 +1,4 @@
-#include "mechanics.h"
+#include "../headers/mechanics.h"
 #include <stdio.h>
 
 ACTIONS get_action() {

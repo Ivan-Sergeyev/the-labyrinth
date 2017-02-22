@@ -1,11 +1,2 @@
-*
-!*.*
-!Makefile
-<<<<<<< HEAD
-!src/*.*
-=======
-!src/
->>>>>>> 0d936a430b52e8f6ce2937bd449eb1ec31a479b7
-
-*.gch
-*.out
+obj/*
+bin/*

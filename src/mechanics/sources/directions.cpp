@@ -1,4 +1,4 @@
-#include "directions.h"
+#include "../headers/directions.h"
 
 
 bool is_direction(const DIRECTIONS &direction) {

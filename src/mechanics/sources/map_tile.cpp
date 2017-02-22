@@ -1,4 +1,4 @@
-#include "map_tile.h"
+#include "../headers/map_tile.h"
 
 
 MapTile::MapTile() : _type(MTT_UNDEFINED) {}

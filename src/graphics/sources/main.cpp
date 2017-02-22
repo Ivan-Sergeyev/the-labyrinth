@@ -1,4 +1,4 @@
-#include "screens.h"
+#include "../headers/screens.h"
 
 
 void init_ncurses_graphics() {

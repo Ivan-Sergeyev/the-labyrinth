@@ -1,7 +1,7 @@
 #ifndef SRC_1_SCREEN_GAME_H_
 #define SRC_1_SCREEN_GAME_H_
 
-#include <string.h>
+#include <cstring>
 #include <stdio.h>
 #include <ncurses.h>
 
@@ -9,8 +9,7 @@
 #include "screens.h"
 #include "message_windows.h"
 
-#include "gamestate.h"
-#include "player.h"
+#include "../../mechanics/headers/gamestate.h"
 
 
 player_move_t parse_input(char *str, int len) {
