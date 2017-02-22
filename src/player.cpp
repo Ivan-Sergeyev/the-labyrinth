@@ -1,4 +1,27 @@
+#include <algorithm>
+
 #include "player.h"
+
+using std::max;
+using std::min;
+
+
+player_move_t::player_move_t() :
+    action(ACT_NONE), direction(DIR_NONE) {}
+
+player_move_t::player_move_t(const player_move_t &other) :
+    action(other.action), direction(other.direction) {}
+
+player_move_t::player_move_t(const PLAYER_ACTIONS &a, const DIRECTIONS &d) :
+    action(a), direction(d) {}
+
+player_move_t& player_move_t::operator = (const player_move_t &other) {
+    if (this != &other) {
+        action = other.action;
+        direction = other.direction;
+    }
+    return *this;
+}
 
 
 PLAYER_HEALTH_STATES Player::_get_health_state() const {

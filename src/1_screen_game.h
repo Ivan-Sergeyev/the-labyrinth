@@ -13,10 +13,7 @@
 #include "player.h"
 
 
-using std::pair;
-
-
-pair<PLAYER_ACTIONS, DIRECTIONS> parse_input(char *str, int len) {
+player_move_t parse_input(char *str, int len) {
     PLAYER_ACTIONS action = ACT_NONE;
     DIRECTIONS direction = DIR_NONE;
 
@@ -24,14 +21,14 @@ pair<PLAYER_ACTIONS, DIRECTIONS> parse_input(char *str, int len) {
     char *word2 = new char[len];
     sscanf(str, "%s %s", word1, word2);
 
-    for(int i = 0; i < ACT_NUM_ACTIONS; ++i) {
+    for (int i = 0; i < ACT_NUM_ACTIONS; ++i) {
         if (!strcmp(player_actions_strings[i], word1)) {
             action = (PLAYER_ACTIONS)i;
             break;
         }
     }
 
-    for(int i = 0; i < DIR_NUM_DIRECTIONS; ++i) {
+    for (int i = 0; i < DIR_NUM_DIRECTIONS; ++i) {
         if (!strcmp(directions_strings[i], word2)) {
             direction = (DIRECTIONS)i;
             break;
@@ -41,7 +38,7 @@ pair<PLAYER_ACTIONS, DIRECTIONS> parse_input(char *str, int len) {
     delete[] word1;
     delete[] word2;
 
-    return pair<PLAYER_ACTIONS, DIRECTIONS> (action, direction);
+    return player_move_t(action, direction);
 }
 
 
@@ -79,6 +76,16 @@ SCREEN_ID game() {
     bool exit = false;
     Gamestate gamestate;
 
+    // todo :
+    // gamestate.init
+    // <create player list>
+    // gamestate.set_players
+    // player_id = gamestate.get_player_id
+
+    int player_id = 0;
+    player_move_t p_move;
+    OUTCOMES outcome;
+
     while (1) {
         refresh();
         _msg_box.refresh();
@@ -87,10 +94,14 @@ SCREEN_ID game() {
 
         char* msg = _msg_in.input();
         _msg_hstr.add_msg(msg);
+        _msg_hstr.refresh();
 
-        exit = !strncmp(msg, "exit", _MAX_MSG_LEN);
+        p_move = parse_input(msg, _MAX_MSG_LEN);
+        outcome = gamestate.attempt_move(player_id, p_move);
+        _msg_hstr.add_msg(outcomes_strings[outcome]);
+        _msg_hstr.refresh();
 
-        if (exit) {
+        if (!strncmp(msg, "exit", _MAX_MSG_LEN)) {
             return SC_EXIT;
         }
     }

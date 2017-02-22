@@ -7,6 +7,7 @@
 class BoxWindow {
  private:
     int _h, _w, _y, _x;
+
  protected:
     WINDOW *_window;
 

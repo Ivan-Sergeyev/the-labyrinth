@@ -47,7 +47,7 @@ class MessageHistoryBox : public BoxWindow {
         }
     }
 
-    void add_msg(char *msg) {
+    void add_msg(const char *msg) {
         strncpy(_history[_oldest_idx], msg, _message_max_length);
         _oldest_idx = (_oldest_idx + 1) % _history_length;
     }

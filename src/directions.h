@@ -9,4 +9,6 @@ const char directions_strings[DIR_NUM_DIRECTIONS][6] = {
     "left", "up", "down", "right"
 };
 
+bool is_direction(const DIRECTIONS &direction);
+
 #endif  // SRC_DIRECTIONS_H_

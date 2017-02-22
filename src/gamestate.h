@@ -5,6 +5,36 @@
 #include "player.h"
 
 
+enum OUTCOMES {
+    OUT_INVALID = 0, OUT_IGNORE, OUT_NO_TURN,
+    OUT_SKIP,
+    OUT_PASS, OUT_WALL,
+    OUT_MISS, OUT_WOUND, OUT_KILL,
+    OUT_BOMB_SUCCESS, OUT_BOMB_FAIL,
+    OUT_NUM_OUTCOMES
+};
+
+
+const char outcomes_strings[OUT_NUM_OUTCOMES][30] = {
+    "your command is invalid",
+    "command ignored",
+    "it is not your turn",
+    "you skip your turn",
+    "you pass to the next tile",
+    "you bump into a wall",
+    "you miss",
+    "you wound another player",
+    "you kill another player",
+    "you blow up a wall",
+    "you fail to blow up a wall"
+};
+
+
+bool retry_turn(const OUTCOMES &outcome) {
+    return outcome == OUT_INVALID || outcome == OUT_NUM_OUTCOMES;
+}
+
+
 class Gamestate {
  private:
     int _x_size, _y_size;
@@ -15,7 +45,11 @@ class Gamestate {
     MapTile **_tiles;
     Treasure *_treasures;
 
-    Player *_players;
+    Player **_players;
+
+    void _pass_turn_to_next_player() {
+        // todo : implement
+    }
 
  public:
     Gamestate() :
@@ -26,7 +60,7 @@ class Gamestate {
 
     ~Gamestate() {
         if (_tiles) {
-            for(int i = 0; i < _x_size; ++i) {
+            for (int i = 0; i < _x_size; ++i) {
                 delete[] _tiles[i];
             }
             delete[] _tiles;
@@ -36,12 +70,11 @@ class Gamestate {
         delete[] _players;
     }
 
-    void init(int x_size, int y_size, int num_treasures,
-              int num_players, const Player *players) {
+    void init(int x_size, int y_size, int num_treasures, int num_players) {
         _x_size = x_size;
         _y_size = y_size;
         _tiles = new MapTile*[_x_size];
-        for(int i = 0; i < _x_size; ++i) {
+        for (int i = 0; i < _x_size; ++i) {
             _tiles[i] = new MapTile[_y_size];
         }
 
@@ -49,27 +82,88 @@ class Gamestate {
         _treasures = new Treasure[num_treasures];
 
         _num_players = num_players;
-        _players = new Player[num_players];
+        _players = new Player*[num_players];
+    }
+
+    void set_players(Player **players) {
+        for (int i = 0; i < _num_players; ++i) {
+            _players[i] = players[i];
+        }
+    }
+
+    int get_player_id(const Player &player) {
+        for (int i = 0; i < _num_players; ++i) {
+            if (_players[i] == &player) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     void generate_map() {
+        // todo : implement
         // todo : add other parameters -- number of special tiles of each type,
         //        number of treasures, etc.
     }
 
-    void attempt_move() {
-        // todo
-    }
+    OUTCOMES attempt_move(int player_id, player_move_t p_move) {
+        // todo : check if it is player's turn
 
-    const Player* get_player(int idx) const {
-        if (idx >= 0 && idx < _num_players) {
-            return &(_players[idx]);
+        OUTCOMES outcome = OUT_INVALID;
+        switch (p_move.action) {
+        case ACT_NONE:
+            break;
+        case ACT_SKIP:
+            // skip turn
+            outcome = OUT_SKIP;
+            break;
+        case ACT_MOVE:
+            if (!is_direction(p_move.direction)) {
+                break;
+            }
+            // attempt to move player
+            outcome = OUT_WALL;
+            break;
+            outcome = OUT_PASS;
+            break;
+        case ACT_KNIFE:
+            // attempt to use a knife
+            outcome = OUT_MISS;
+            break;
+            outcome = OUT_WOUND;
+            break;
+            outcome = OUT_KILL;
+            break;
+        case ACT_SHOOT:
+            if (!is_direction(p_move.direction)) {
+                break;
+            }
+            // attempt to shoot a bullet
+            outcome = OUT_MISS;
+            break;
+            outcome = OUT_WOUND;
+            break;
+            outcome = OUT_KILL;
+            break;
+        case ACT_BOMB:
+            if (!is_direction(p_move.direction)) {
+                break;
+            }
+            // attempt to use a bomb
+            outcome = OUT_BOMB_FAIL;
+            break;
+            outcome = OUT_BOMB_SUCCESS;
+            break;
+        default:
+            break;
         }
-        return 0;
-    }
 
-// todo : save
-// todo : load
+        if (!retry_turn(outcome)) {
+            _pass_turn_to_next_player();
+        }
+
+        return outcome;
+    }
 };
 
 #endif  // SRC_GAMESTATE_H_

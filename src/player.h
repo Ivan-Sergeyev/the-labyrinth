@@ -1,14 +1,8 @@
 #ifndef SRC_PLAYER_H_
 #define SRC_PLAYER_H_
 
-#include <algorithm>
-
 #include "directions.h"
 #include "treasure.h"
-
-
-using std::max;
-using std::min;
 
 
 #define MAX_BOMBS 3
@@ -26,7 +20,7 @@ using std::min;
 
 
 enum PLAYER_HEALTH_STATES {PHS_ERROR = -1, PHS_DEAD, PHS_WOUNDED,
-                           PHS_WELL, PHS_USED_RANGE, PHS_NUM_STATES};
+                           PHS_WELL, PHS_NUM_STATES};
 
 enum PLAYER_ACTIONS {
     ACT_NONE = -1,
@@ -39,11 +33,17 @@ const char player_actions_strings[ACT_NUM_ACTIONS][6] = {
     "skip", "move", "knife", "shoot", "bomb"
 };
 
-enum OUTCOMES {
-    OUT_SKIP = 0,
-    OUT_PASS, OUT_WALL,
-    OUT_WOUND, OUT_KILL,
-    OUT_BOMB_SUCCESS, OUT_BOMB_FAIL
+
+class player_move_t {
+ public:
+    PLAYER_ACTIONS action;
+    DIRECTIONS direction;
+
+    player_move_t();
+    player_move_t(const player_move_t &other);
+    player_move_t(const PLAYER_ACTIONS &a, const DIRECTIONS &d);
+
+    player_move_t& operator = (const player_move_t &other);
 };
 
 

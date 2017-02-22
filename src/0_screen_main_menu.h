@@ -43,26 +43,26 @@ SCREEN_ID main_menu() {
 
         key = getch();
         switch (key) {
-            case 27:  // escape
-                exit = true;
-                break;
-            case KEY_ENTER:
-            case 13:
-            case 10:  // enter
-                switch (highlight) {
-                    case MM_NEW_GAME:
-                        return SC_GAME;
-                    case MM_EXIT:
-                        exit = true;
-                        break;
-                }
-                break;
-            case KEY_DOWN:
-                highlight = (highlight + 1) % MM_NUM_BUTTONS;
-                break;
-            case KEY_UP:
-                highlight = (MM_NUM_BUTTONS + highlight - 1) % MM_NUM_BUTTONS;
-                break;
+        case 27:  // escape
+            exit = true;
+            break;
+        case KEY_ENTER:
+        case 13:
+        case 10:  // enter
+            switch (highlight) {
+                case MM_NEW_GAME:
+                    return SC_GAME;
+                case MM_EXIT:
+                    exit = true;
+                    break;
+            }
+            break;
+        case KEY_DOWN:
+            highlight = (highlight + 1) % MM_NUM_BUTTONS;
+            break;
+        case KEY_UP:
+            highlight = (MM_NUM_BUTTONS + highlight - 1) % MM_NUM_BUTTONS;
+            break;
         }
 
         if (exit) {
