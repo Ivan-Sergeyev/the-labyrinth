@@ -51,6 +51,20 @@ class Gamestate {
         // todo : implement
     }
 
+    bool _has_wall(int x, int y, DIRECTIONS direction) {
+	return MapTile[x][y].has_wall(direction);
+    }
+
+    bool _has_other_players(int x, int y, int player_id) {
+	for(int i = 0; i < _num_players; i++)
+	{
+	    if((_players[i]->get_x_pos() == x) &&
+	       (_players[i]->get_y_pos() == y) &&
+	       (i != player_id)) return true;
+	}
+	return false;
+    }
+
  public:
     Gamestate() :
         _x_size(0), _y_size(0), _tiles(0),
@@ -110,6 +124,8 @@ class Gamestate {
         // todo : check if it is player's turn
 
         OUTCOMES outcome = OUT_INVALID;
+	Player player& = *_players[player_id];
+
         switch (p_move.action) {
         case ACT_NONE:
             break;
@@ -122,18 +138,25 @@ class Gamestate {
                 break;
             }
             // attempt to move player
-            outcome = OUT_WALL;
-            break;
-            outcome = OUT_PASS;
+	    if (_has_wall(player.get_x_pos(), player.get_y_pos())) {
+            	outcome = OUT_WALL;
+	    {
+	    else {
+		outcome = OUT_PASS;
+	    }
             break;
         case ACT_KNIFE:
             // attempt to use a knife
-            outcome = OUT_MISS;
-            break;
-            outcome = OUT_WOUND;
-            break;
-            outcome = OUT_KILL;
-            break;
+	    if (!_has_other_players(player.get_x_pos(), player.get_y_pos())) {
+            	outcome = OUT_MISS;
+            	break;
+	    }
+	    else {
+            	outcome = OUT_WOUND;
+            	break;
+	    }
+            //outcome = OUT_KILL;
+            //break;
         case ACT_SHOOT:
             if (!is_direction(p_move.direction)) {
                 break;
