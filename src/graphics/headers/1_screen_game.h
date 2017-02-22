@@ -72,7 +72,6 @@ SCREEN_ID game() {
     MessageHistoryBox _msg_hstr(mh_h, mh_w, mh_y, mh_x,
                                 _MAX_HISTORY_LEN, _MAX_MSG_LEN);
 
-    bool exit = false;
     Gamestate gamestate;
 
     // todo :

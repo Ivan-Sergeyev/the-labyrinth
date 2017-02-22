@@ -3,7 +3,7 @@ all: bin/main
 
 
 graph_obj := obj/main.o
-mech_obj  := obj/directions.o obj/gamestate.o obj/map_tile.o obj/map_wall.o obj/mechanics.o obj/player.o obj/treasure.o
+mech_obj  := obj/directions.o obj/gamestate.o obj/map_tile.o obj/map_wall.o obj/player.o obj/treasure.o
 
 $(mech_obj): obj/%.o: src/mechanics/sources/%.cpp src/mechanics/headers/%.h
 	g++ -Wall $< -c -o $@
