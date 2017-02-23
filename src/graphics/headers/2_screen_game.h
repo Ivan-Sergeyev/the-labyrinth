@@ -45,7 +45,7 @@ player_move_t parse_input(char *str, int len) {
 }
 
 
-SCREEN_ID game(Gamestate *gamestate) {
+SCREEN_ID game(Gamestate **gamestate) {
     echo();
 
     int scr_h, scr_w;
@@ -93,7 +93,7 @@ SCREEN_ID game(Gamestate *gamestate) {
         _msg_hstr.refresh();
 
         p_move = parse_input(msg, _MAX_MSG_LEN);
-        outcome = gamestate->request_move(player_id, p_move);
+        outcome = (*gamestate)->request_move(player_id, p_move);
         _msg_hstr.add_msg(OUTCOME_STRING[outcome]);
         _msg_hstr.refresh();
 

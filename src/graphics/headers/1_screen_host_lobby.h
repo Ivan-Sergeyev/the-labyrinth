@@ -4,10 +4,10 @@
 #include "../../mechanics/headers/gamestate.h"
 
 
-SCREEN_ID host_lobby(Gamestate *gamestate) {
-    delete gamestate;
-    gamestate = new Gamestate();
-    gamestate->generate_map(5, 5);
+SCREEN_ID host_lobby(Gamestate **gamestate) {
+    delete *gamestate;
+    *gamestate = new Gamestate();
+    (*gamestate)->generate_map(5, 5);
     return SCR_GAME;
 }
 
