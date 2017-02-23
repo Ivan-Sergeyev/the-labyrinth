@@ -16,6 +16,7 @@ SCREEN_ID host_lobby(Gamestate **gamestate) {
     } else {
         std::cerr << "map generation successful\n";
     }
+
     return SCR_GAME;
 }
 
