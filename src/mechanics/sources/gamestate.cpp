@@ -67,6 +67,25 @@ int Gamestate::save_map(const char *filename) const {
     return _game_map.save(filename);
 }
 
+OUTCOME Gamestate::_try_shoot(int player_id, DIRECTION dir) {
+    if (_player_pieces[player_id].get_bullets() == 0) {
+        return OUT_INVALID;
+    }
+    int x = _player_pieces[player_id].get_x_pos();
+    int y = _player_pieces[player_id].get_y_pos();
+
+    while (!_game_map.can_move(x, y, dir)) {
+	x += DIRECTION_DX[dir];
+	y += DIRECTION_DY[dir];
+
+	if (_wound_other_players(x, y, player_id)) {
+	    return OUT_WOUND;
+	}
+    }
+
+    return OUT_MISS;
+}
+
 OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
     if (!_check_initialization()) {
         return OUT_INVALID;
@@ -80,6 +99,9 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
     PlayerPiece &player = _player_pieces[player_id];
     int player_x = player.get_x_pos();
     int player_y = player.get_y_pos();
+
+    //needed for bomb action
+    MapWall& _map_wall = _game_map.get_wall(player_x, player_y, p_move.direction);
 
     switch (p_move.action) {
     case ACT_NONE:
@@ -118,22 +140,23 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
         if (!is_direction(p_move.direction)) {
             break;
         }
-        // attempt to shoot a bullet
-        outcome = OUT_MISS;
-        break;
-        outcome = OUT_WOUND;
-        break;
-        outcome = OUT_KILL;
-        break;
+        
+	outcome = _try_shoot(player_id, p_move.direction);
+	break;
+
     case ACT_BOMB:
         if (!is_direction(p_move.direction)) {
             break;
         }
         // attempt to use a bomb
-        outcome = OUT_BOMB_FAIL;
+	if ((!_map_wall.exists()) || (_map_wall.get_type() != WT_DESTRUCTIBLE)) {
+            outcome = OUT_BOMB_FAIL;
+	}
+	else {
+            outcome = OUT_BOMB_SUCCESS;
+	}
         break;
-        outcome = OUT_BOMB_SUCCESS;
-        break;
+
     default:
         break;
     }

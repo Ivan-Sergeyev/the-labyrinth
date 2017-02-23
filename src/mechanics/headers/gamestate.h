@@ -47,6 +47,7 @@ class Gamestate {
 
     void _start_next_turn(OUTCOME outcome);
     bool _wound_other_players(int x, int y, int player_id);
+    OUTCOME _try_shoot(int player_id, DIRECTION dir);
 
  public:
     Gamestate();

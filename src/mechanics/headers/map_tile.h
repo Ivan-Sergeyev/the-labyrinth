@@ -39,6 +39,8 @@ class MapTile {
     void set_next(MapTile *next);
     bool add_wall(MapWall wall);
     bool destroy_wall_in_direction(DIRECTION dir);
+
+    MapWall& get_wall(DIRECTION dir);
 };
 
 #endif  // SRC_MECHANICS_HEADERS_MAP_TILE_H_

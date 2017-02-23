@@ -320,3 +320,8 @@ int GameMap::save(const char *filename) const {
 bool GameMap::can_move(int from_x, int from_y, DIRECTION dir) const {
     return !_tiles[from_x][from_y].has_wall(dir);
 }
+
+
+MapWall& GameMap::get_wall(int x, int y, DIRECTION dir) {
+    return _tiles[x][y].get_wall(dir);
+}
