@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../headers/map_tile.h"
 
 
@@ -35,11 +34,6 @@ MapTile* MapTile::get_next() const {
 }
 
 bool MapTile::has_wall(DIRECTION dir) const {
-    std::cerr << "in has wall: ";
-    for (int d = 0; d < DIR_NUMBER; ++d) {
-        std::cerr << _walls[d].exists() << ' ';
-    }
-    std::cerr << '\n';
     return dir != DIR_NONE && _walls[dir].exists();
 }
 
@@ -53,7 +47,6 @@ void MapTile::set_next(MapTile *next) {
 
 bool MapTile::add_wall(MapWall wall) {
     DIRECTION dir = wall.get_direction();
-    std::cerr << "adding wall in direction " << dir << '\n';
     if (!has_wall(dir)) {
         _walls[dir] = wall;
         return true;

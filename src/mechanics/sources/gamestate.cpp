@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../headers/gamestate.h"
 
 
@@ -100,7 +99,6 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
     PlayerPiece &player = _player_pieces[player_id];
     int player_x = player.get_x_pos();
     int player_y = player.get_y_pos();
-    std::cerr << "moving " << player_x << ' ' << player_y << '\n';
 
     //needed for bomb action
     MapWall& _map_wall = _game_map.get_wall(player_x, player_y, p_move.direction);
@@ -142,7 +140,7 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
         if (!is_direction(p_move.direction)) {
             break;
         }
-        
+
 	outcome = _try_shoot(player_id, p_move.direction);
 	break;
 

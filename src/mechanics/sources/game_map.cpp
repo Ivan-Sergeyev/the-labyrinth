@@ -62,7 +62,7 @@ int GameMap::_load_tiles(std::ifstream &fin) {
             for (int x = 0; x < 2 * _x_size - 1; x += 2) {
                 type = get_tile_type_by_symbol(line[x]);
                 if (type == MTT_UNDEFINED) {
-                    std::cerr << "undefined tile symbol\n";
+                    // std::cerr << "undefined tile symbol " << line[x] << '\n';
                     return 3;
                 }
                 // std::cerr << "type = " << MTT_SYMBOL[type] << '\n';
@@ -103,14 +103,11 @@ int GameMap::_load_tiles(std::ifstream &fin) {
             for (int x = 0; x < 2 * _x_size - 1; x += 2) {
                 switch (line[x]) {
                 case '-':
+                    // std::cerr << "horizontal wall\n";
                     wall_here = MapWall(DIR_DOWN, WT_DESTRUCTIBLE);
                     wall_there = MapWall(DIR_UP, WT_DESTRUCTIBLE);
                     _tiles[x / 2][y / 2].add_wall(wall_here);
                     _tiles[x / 2][y / 2 + 1].add_wall(wall_there);
-                    std::cerr << "horizontal wall\n";
-                    std::cerr << "cells are " << x / 2 << ' ' << y / 2 << " and "
-                              << x / 2 << ' ' << y / 2 + 1 << '\n';
-                    break;
                 case 'V':
                     // std::cerr << "flow down\n";
                     _tiles[x / 2][y / 2].set_next(&(_tiles[x / 2][y / 2 + 1]));
@@ -162,6 +159,8 @@ int GameMap::_load_holes(std::ifstream &fin) {
 
     fin >> num_holes >> num_cycles;
     if (num_holes != _num_tiles[MTT_HOLE]) {
+        // std::cerr << "wrong number of holes: "
+        //           << num_holes << " != " << _num_tiles[MTT_HOLE] << '\n';
         return 3;
     }
 
@@ -171,16 +170,18 @@ int GameMap::_load_holes(std::ifstream &fin) {
         fin >> x >> y;
         first_tile = &(_tiles[x - 1][y - 1]);
         if (first_tile->get_type() != MTT_HOLE) {
+            // std::cerr << "no hole in " << x - 1 << ' ' << y - 1 << '\n';
             return 3;
         }
 
         cur_tile = first_tile;
-        for (int h = 0; h < len_cycle; ++h) {
+        for (int h = 1; h < len_cycle; ++h) {
             prev_tile = cur_tile;
 
             fin >> x >> y;
             cur_tile = &(_tiles[x - 1][y - 1]);
             if (cur_tile->get_type() != MTT_HOLE) {
+                // std::cerr << "no hole in " << x - 1 << ' ' << y - 1 << '\n';
                 return 3;
             }
             prev_tile->set_next(cur_tile);
@@ -191,15 +192,12 @@ int GameMap::_load_holes(std::ifstream &fin) {
 }
 
 void GameMap::_add_outer_walls() {
-    std::cerr << "add outer walls\n";
     for (int x = 0; x < _x_size; ++x) {
-        std::cerr << "x = " << x << '\n';
         _tiles[x][0].add_wall(MapWall(DIR_UP, WT_MONOLYTH));
         _tiles[x][_y_size - 1].add_wall(MapWall(DIR_DOWN, WT_MONOLYTH));
     }
 
     for (int y = 0; y < _y_size; ++y) {
-        std::cerr << "y = " << y << '\n';
         _tiles[0][y].add_wall(MapWall(DIR_LEFT, WT_MONOLYTH));
         _tiles[_x_size - 1][y].add_wall(MapWall(DIR_RIGHT, WT_MONOLYTH));
     }
@@ -318,25 +316,25 @@ int GameMap::load(const char *filename) {
 
         subroutine_ret = _load_tiles(fin);
         if (subroutine_ret) {
-            std::cerr << "failed to load tiles\n";
+            // std::cerr << "failed to load tiles\n";
             return subroutine_ret;
         }
         _add_outer_walls();
 
         subroutine_ret = _load_exits(fin);
         if (subroutine_ret) {
-            std::cerr << "failed to load exits\n";
+            // std::cerr << "failed to load exits\n";
             return subroutine_ret;
         }
 
         subroutine_ret = _load_holes(fin);
         if (subroutine_ret) {
-            std::cerr << "failed to load holes\n";
+            // std::cerr << "failed to load holes\n";
             return subroutine_ret;
         }
     } catch (std::ios_base::failure &fb) {
         // todo: deliver exception message from fb.what()
-        std::cerr << "input failed: " << fb.what() << '\n';
+        // std::cerr << "input failed: " << fb.what() << '\n';
         return 3;
     }
 
@@ -367,7 +365,6 @@ int GameMap::save(const char *filename) const {
 }
 
 bool GameMap::can_move(int from_x, int from_y, DIRECTION dir) const {
-    std::cerr << "check " << from_x << ' ' << from_y << ' ' << dir << '\n';
     return !(_tiles[from_x][from_y].has_wall(dir));
 }
 

@@ -10,11 +10,12 @@ SCREEN_ID host_lobby(Gamestate **gamestate) {
     delete *gamestate;
     *gamestate = new Gamestate();
 
-    if ((*gamestate)->generate_map(5, 5)) {
-        std::cerr << "failed to generate map\n";
+    int ret = (*gamestate)->generate_map(5, 5);
+    if (!ret) {
+        // std::cerr << "failed to generate map\n";
         return SCR_EXIT;
     } else {
-        std::cerr << "map generation successful\n";
+        // std::cerr << "map generation successful\n";
     }
 
     return SCR_GAME;
