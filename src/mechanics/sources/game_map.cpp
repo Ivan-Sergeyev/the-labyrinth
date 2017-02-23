@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <memory.h>
 #include <string>
 
@@ -41,62 +42,86 @@ int GameMap::_load_tiles(std::ifstream &fin) {
     fin >> _x_size >> _y_size;
 
     for (int x = 0; x < 2 * _x_size - 1; ++x) {
-        std::getline(fin, line);
-        if (line.length() != (unsigned int) _y_size) {
+        while (1) {
+            std::getline(fin, line);
+            if (!line.empty()) {
+                break;
+            }
+        }
+
+        // std::cerr << "line = " << line << '\n';
+        if (line.length() != (unsigned int) 2 * _y_size - 1) {
+            // std::cerr << "incorrect line length\n";
             return 3;
         }
 
-        if (x % 2 == 1) {
+        if (x % 2 == 0) {
+            // std::cerr << "-- even line --\n";
+
             // tiles
             for (int y = 0; y < 2 * _y_size - 1; y += 2) {
                 type = get_tile_type_by_symbol(line[y]);
-                ++_num_tiles[type];
                 if (type == MTT_UNDEFINED) {
+                    std::cerr << "undefined tile symbol\n";
                     return 3;
                 }
-                _tiles[x][y].set_type(type);
+                // std::cerr << "type = " << MTT_SYMBOL[type] << '\n';
+                ++_num_tiles[type];
+                _tiles[x / 2][y / 2].set_type(type);
             }
 
             // vertical walls and horizontal directions
             for (int y = 1; y < 2 * _y_size - 1; y += 2) {
                 switch (line[y]) {
                 case '|':
+                    // std::cerr << "vertical wall\n";
                     wall_here = MapWall(DIR_RIGHT, WT_DESTRUCTIBLE);
                     wall_there = MapWall(DIR_LEFT, WT_DESTRUCTIBLE);
                     _tiles[x / 2][y / 2].add_wall(wall_here);
                     _tiles[x / 2 + 1][y / 2].add_wall(wall_there);
                     break;
                 case '>':
+                    // std::cerr << "flow right\n";
                     _tiles[x / 2][y / 2].set_next(&(_tiles[x / 2 + 1][y / 2]));
                     break;
                 case '<':
+                    // std::cerr << "flow left\n";
                     _tiles[x / 2 + 1][y / 2].set_next(&(_tiles[x / 2][y / 2]));
                     break;
                 case ' ':
+                    // std::cerr << "whitespace\n";
                     break;
                 default:
+                    // std::cerr << "undefined symbol\n";
                     return 3;
                 }
             }
         } else {
+            // std::cerr << "-- odd line --\n";
+
             // horizontal walls and vertical directions
             for (int y = 0; y < 2 * _y_size - 1; y += 2) {
                 switch (line[y]) {
                 case '-':
+                    // std::cerr << "horizontal wall\n";
                     wall_here = MapWall(DIR_DOWN, WT_DESTRUCTIBLE);
                     wall_there = MapWall(DIR_UP, WT_DESTRUCTIBLE);
                     _tiles[x / 2][y / 2].add_wall(wall_here);
                     _tiles[x / 2][y / 2 + 1].add_wall(wall_there);
                     break;
                 case 'V':
+                    // std::cerr << "flow down\n";
                     _tiles[x / 2][y / 2].set_next(&(_tiles[x / 2][y / 2 + 1]));
                     break;
                 case '^':
+                    // std::cerr << "flow up\n";
                     _tiles[x / 2][y / 2 + 1].set_next(&(_tiles[x / 2][y / 2]));
                     break;
                 case ' ':
+                    // std::cerr << "whitespace\n";
                     break;
                 default:
+                    // std::cerr << "undefined symbol\n";
                     return 3;
                 }
             }
@@ -162,6 +187,23 @@ int GameMap::_load_holes(std::ifstream &fin) {
     }
     return 0;
 }
+
+void GameMap::_add_outer_walls() {
+    MapWall wall_up(DIR_UP, WT_MONOLYTH);
+    MapWall wall_down(DIR_DOWN, WT_MONOLYTH);
+    for (int x = 0; x < _x_size; ++x) {
+        _tiles[x][0].add_wall(wall_down);
+        _tiles[x][_y_size - 1].add_wall(wall_up);
+    }
+
+    MapWall wall_left(DIR_LEFT, WT_MONOLYTH);
+    MapWall wall_right(DIR_RIGHT, WT_MONOLYTH);
+    for (int y = 0; y < _y_size; ++y) {
+        _tiles[0][y].add_wall(wall_right);
+        _tiles[_x_size - 1][y].add_wall(wall_left);
+    }
+}
+
 
 void GameMap::_save_tiles(std::ofstream &fout) const {
     MapTile *tile, *next_tile;
@@ -293,6 +335,8 @@ int GameMap::load(const char *filename) {
     }
 
     fin.close();
+    _add_outer_walls();
+
     return 0;
 }
 

@@ -33,7 +33,7 @@ void draw_menu(int highlight) {
 }
 
 
-SCREEN_ID main_menu(Gamestate *gamestate) {
+SCREEN_ID main_menu(Gamestate **gamestate) {
     noecho();
 
     int key = 0;

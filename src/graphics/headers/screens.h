@@ -16,7 +16,7 @@ enum SCREEN_ID {
 #include "1_screen_host_lobby.h"
 #include "2_screen_game.h"
 
-SCREEN_ID (* const screens[SCR_NUMBER])(Gamestate *) = {
+SCREEN_ID (* const screens[SCR_NUMBER])(Gamestate **) = {
     main_menu, host_lobby, game
 };
 
