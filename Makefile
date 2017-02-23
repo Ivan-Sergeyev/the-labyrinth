@@ -18,4 +18,4 @@ style_check:
 	python cpplint.py --filter=-legal/copyright,-build/include src/*/sources/*.cpp src/*/headers/*.h
 
 clean:
-	rm obj/* bin/*
+	-rm obj/* bin/*
