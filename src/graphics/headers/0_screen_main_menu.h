@@ -9,7 +9,7 @@
 enum MAIN_MENU_BUTTONS {
     MM_NEW_GAME = 0, MM_EXIT, MM_NUM_BUTTONS
 };
-const char* const menu_options[MM_NUM_BUTTONS] = {"New Game", "Exit"};
+const char* const MENU_OPTIONS[MM_NUM_BUTTONS] = {"New Game", "Exit"};
 
 
 void draw_menu(int highlight) {
@@ -22,10 +22,10 @@ void draw_menu(int highlight) {
     for (int i = 0; i < MM_NUM_BUTTONS; ++i) {
         if (i == highlight) {
             attron(A_REVERSE);
-            mvprintw(y, x, menu_options[i]);
+            mvprintw(y, x, MENU_OPTIONS[i]);
             attroff(A_REVERSE);
         } else {
-            mvprintw(y, x, menu_options[i]);
+            mvprintw(y, x, MENU_OPTIONS[i]);
         }
         ++y;
     }

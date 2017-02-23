@@ -4,7 +4,7 @@
 #include "directions.h"
 
 
-enum MAP_WALL_TYPES {
+enum MAP_WALL_TYPE {
     WT_UNDEFINED = -1,
     WT_DESTRUCTIBLE, WT_INDESTRUCTIBLE, WT_MONOLYTH
 };
@@ -12,26 +12,26 @@ enum MAP_WALL_TYPES {
 
 class MapWall {
  private:
-    DIRECTIONS _direction;
-    MAP_WALL_TYPES _type;
+    DIRECTION _direction;
+    MAP_WALL_TYPE _type;
     bool _enabled;
 
  public:
     MapWall();
-    MapWall(DIRECTIONS dir, MAP_WALL_TYPES type, bool enabled = true);
+    MapWall(DIRECTION dir, MAP_WALL_TYPE type, bool enabled = true);
     MapWall(const MapWall &other);
 
     ~MapWall();
 
     void clear();
 
-    DIRECTIONS get_direction() const;
-    MAP_WALL_TYPES get_type() const;
+    DIRECTION get_direction() const;
+    MAP_WALL_TYPE get_type() const;
     bool get_enabled() const;
 
     bool exists() const;
-    bool has_direction(DIRECTIONS dir) const;
-    bool collides(DIRECTIONS dir) const;
+    bool has_direction(DIRECTION dir) const;
+    bool collides(DIRECTION dir) const;
 
     bool destroy();
 };

@@ -7,7 +7,7 @@
 enum SCREEN_ID {
     SCR_EXIT = -1,
     SCR_MAIN_MENU, SCR_LOBBY, SCR_GAME,
-    SCR_NUM_SCREENS
+    SCR_NUMBER
 };
 
 #define SCR_FIRST SCR_MAIN_MENU
@@ -16,7 +16,7 @@ enum SCREEN_ID {
 #include "1_screen_lobby.h"
 #include "2_screen_game.h"
 
-SCREEN_ID (* const screens[SCR_NUM_SCREENS])(Gamestate *) = {
+SCREEN_ID (* const screens[SCR_NUMBER])(Gamestate *) = {
     main_menu, lobby, game
 };
 

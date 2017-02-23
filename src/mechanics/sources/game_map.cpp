@@ -63,7 +63,6 @@ bool GameMap::generate() {
     return load_result == 0;
 }
 
-
 int GameMap::load(const char *filename) {
     // returns
     // 0 = ok
@@ -98,28 +97,11 @@ int GameMap::load(const char *filename) {
 
             if (x % 2 == 1) {
                 for (int y = 0; y < 2 * _y_size - 1; y += 2) {
-                    switch (line[y]) {
-                    case 'F':
-                        _tiles[x / 2][y / 2].set_type(MTT_FREE);
-                        break;
-                    case 'H':
-                        _tiles[x / 2][y / 2].set_type(MTT_HOLE);
-                        break;
-                    case 'R':
-                        _tiles[x / 2][y / 2].set_type(MTT_RIVER);
-                        break;
-                    case 'A':
-                        _tiles[x / 2][y / 2].set_type(MTT_ARMORY);
-                        break;
-                    case 'M':
-                        _tiles[x / 2][y / 2].set_type(MTT_MEDBAY);
-                        break;
-                    case 'E':
-                        _tiles[x / 2][y / 2].set_type(MTT_EXIT);
-                        break;
-                    default:
+                    MAP_TILE_TYPES type = get_tile_type_by_symbol(line[y]);
+                    if (type == MTT_UNDEFINED) {
                         return 3;
                     }
+                    _tiles[x][y].set_type(type);
                 }
                 for (int y = 1; y < 2 * _y_size - 1; y += 2) {
                     switch (line[y]) {
@@ -188,6 +170,6 @@ int GameMap::save(const char *filename) const {
     return 0;  // failed
 }
 
-bool GameMap::can_move(int from_x, int from_y, DIRECTIONS dir) const {
+bool GameMap::can_move(int from_x, int from_y, DIRECTION dir) const {
     return !_tiles[from_x][from_y].has_wall(dir);
 }

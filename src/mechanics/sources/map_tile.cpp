@@ -1,6 +1,15 @@
 #include "../headers/map_tile.h"
 
 
+MAP_TILE_TYPES get_tile_type_by_symbol(char c) {
+    for (int t = 0; t < MTT_NUMBER; ++t) {
+        if (c == MTT_SYMBOLS[t]) {
+            return (MAP_TILE_TYPES) t;
+        }
+    }
+    return MTT_UNDEFINED;
+}
+
 MapTile::MapTile() {
     clear();
 }
@@ -11,7 +20,7 @@ MapTile::MapTile(MAP_TILE_TYPES type) :
 void MapTile::clear() {
     _type = MTT_UNDEFINED;
     _next = nullptr;
-    for (int d = 0; d < DIR_NUM_DIRECTIONS; ++d) {
+    for (int d = 0; d < DIR_NUMBER; ++d) {
         _walls[d].clear();
     }
 }
@@ -24,7 +33,7 @@ MapTile* MapTile::get_next() const {
     return _next;
 }
 
-bool MapTile::has_wall(DIRECTIONS dir) const {
+bool MapTile::has_wall(DIRECTION dir) const {
     return dir != DIR_NONE && _walls[dir].exists();
 }
 
@@ -37,7 +46,7 @@ void MapTile::set_next(MapTile *next) {
 }
 
 bool MapTile::add_wall(MapWall wall) {
-    DIRECTIONS dir = wall.get_direction();
+    DIRECTION dir = wall.get_direction();
     if (!has_wall(dir)) {
         _walls[dir] = wall;
         return true;
@@ -45,6 +54,6 @@ bool MapTile::add_wall(MapWall wall) {
     return false;
 }
 
-bool MapTile::destroy_wall_in_direction(DIRECTIONS dir) {
+bool MapTile::destroy_wall_in_direction(DIRECTION dir) {
     return _walls[dir].destroy();
 }

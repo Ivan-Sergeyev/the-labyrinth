@@ -3,7 +3,6 @@
 
 #include <cstring>
 #include <stdio.h>
-#include <ncurses.h>
 
 
 #include "screens.h"
@@ -12,24 +11,29 @@
 #include "../../mechanics/headers/gamestate.h"
 
 
+const char PLAYER_ACTION_STRING[ACT_NUMBER][6] = {
+    "skip", "move", "knife", "shoot", "bomb"
+};
+
+
 player_move_t parse_input(char *str, int len) {
-    PLAYER_ACTIONS action = ACT_NONE;
-    DIRECTIONS direction = DIR_NONE;
+    PLAYER_ACTION action = ACT_NONE;
+    DIRECTION direction = DIR_NONE;
 
     char *word1 = new char[len];
     char *word2 = new char[len];
     sscanf(str, "%s %s", word1, word2);
 
-    for (int i = 0; i < ACT_NUM_ACTIONS; ++i) {
-        if (!strcmp(player_actions_strings[i], word1)) {
-            action = (PLAYER_ACTIONS)i;
+    for (int i = 0; i < ACT_NUMBER; ++i) {
+        if (!strcmp(PLAYER_ACTION_STRING[i], word1)) {
+            action = (PLAYER_ACTION) i;
             break;
         }
     }
 
-    for (int i = 0; i < DIR_NUM_DIRECTIONS; ++i) {
-        if (!strcmp(DIRECTIONS_STRINGS[i], word2)) {
-            direction = (DIRECTIONS)i;
+    for (int i = 0; i < DIR_NUMBER; ++i) {
+        if (!strcmp(DIRECTION_STRING[i], word2)) {
+            direction = (DIRECTION) i;
             break;
         }
     }
@@ -75,7 +79,7 @@ SCREEN_ID game(Gamestate *gamestate) {
     // player_id = gamestate.get_player_id
     int player_id = 0;
     player_move_t p_move;
-    OUTCOMES outcome;
+    OUTCOME outcome;
 
     while (1) {
         refresh();
@@ -88,8 +92,8 @@ SCREEN_ID game(Gamestate *gamestate) {
         _msg_hstr.refresh();
 
         p_move = parse_input(msg, _MAX_MSG_LEN);
-        outcome = gamestate->attempt_move(player_id, p_move);
-        _msg_hstr.add_msg(outcomes_strings[outcome]);
+        outcome = gamestate->request_move(player_id, p_move);
+        _msg_hstr.add_msg(OUTCOME_STRING[outcome]);
         _msg_hstr.refresh();
 
         if (!strncmp(msg, "exit", _MAX_MSG_LEN)) {

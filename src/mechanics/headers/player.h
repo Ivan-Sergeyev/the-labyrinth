@@ -2,7 +2,6 @@
 #define SRC_MECHANICS_HEADERS_PLAYER_H_
 
 #include "directions.h"
-#include "treasure.h"
 
 
 #define MAX_BOMBS 3
@@ -19,29 +18,28 @@
 #define HEALTH_START 2
 
 
-enum PLAYER_HEALTH_STATES {PHS_ERROR = -1, PHS_DEAD, PHS_WOUNDED,
-                           PHS_WELL, PHS_NUM_STATES};
+enum PLAYER_HEALTH_STATE {
+    PHS_ERROR = -1,
+    PHS_DEAD, PHS_WOUNDED, PHS_WELL,
+    PHS_NUM_STATES
+};
 
-enum PLAYER_ACTIONS {
+enum PLAYER_ACTION {
     ACT_NONE = -1,
     ACT_SKIP, ACT_MOVE,
     ACT_KNIFE, ACT_SHOOT, ACT_BOMB,
-    ACT_NUM_ACTIONS
-};
-
-const char player_actions_strings[ACT_NUM_ACTIONS][6] = {
-    "skip", "move", "knife", "shoot", "bomb"
+    ACT_NUMBER
 };
 
 
 class player_move_t {
  public:
-    PLAYER_ACTIONS action;
-    DIRECTIONS direction;
+    PLAYER_ACTION action;
+    DIRECTION direction;
 
     player_move_t();
     player_move_t(const player_move_t &other);
-    player_move_t(const PLAYER_ACTIONS &a, const DIRECTIONS &d);
+    player_move_t(const PLAYER_ACTION &a, const DIRECTION &d);
 
     player_move_t& operator = (const player_move_t &other);
 };
@@ -55,10 +53,7 @@ class Player {
 
     int _bombs, _bullets, _knives;
 
-    bool _has_treasure;
-    Treasure *_treasure;
-
-    PLAYER_HEALTH_STATES _get_health_state() const;
+    PLAYER_HEALTH_STATE _get_health_state() const;
     int _health_in_range(int health) const;
 
  public:
@@ -72,7 +67,6 @@ class Player {
     int get_bullets() const;
     int get_knives() const;
     bool has_treasure() const;
-    Treasure* carried_treasure() const;
 
     void set_pos(int x, int y);
 
@@ -86,8 +80,6 @@ class Player {
     int remove_bombs(int amount);
     int remove_bullets(int amount);
     int remove_knives(int amount);
-
-    bool add_treasure(Treasure *treasure);
 };
 
 #endif  // SRC_MECHANICS_HEADERS_PLAYER_H_

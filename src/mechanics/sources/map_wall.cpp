@@ -5,7 +5,7 @@ MapWall::MapWall() {
     clear();
 }
 
-MapWall::MapWall(DIRECTIONS dir, MAP_WALL_TYPES type, bool enabled) :
+MapWall::MapWall(DIRECTION dir, MAP_WALL_TYPE type, bool enabled) :
     _direction(dir), _type(type), _enabled(enabled)
     {}
 
@@ -25,11 +25,11 @@ void MapWall::clear() {
     _enabled = false;
 }
 
-DIRECTIONS MapWall::get_direction() const {
+DIRECTION MapWall::get_direction() const {
     return _direction;
 }
 
-MAP_WALL_TYPES MapWall::get_type() const {
+MAP_WALL_TYPE MapWall::get_type() const {
     return _type;
 }
 
@@ -41,11 +41,11 @@ bool MapWall::exists() const {
     return _direction != DIR_NONE && _type != WT_UNDEFINED && _enabled;
 }
 
-bool MapWall::has_direction(DIRECTIONS dir) const {
+bool MapWall::has_direction(DIRECTION dir) const {
     return _direction == dir;
 }
 
-bool MapWall::collides(DIRECTIONS dir) const {
+bool MapWall::collides(DIRECTION dir) const {
     return exists() && has_direction(dir);
 }
 

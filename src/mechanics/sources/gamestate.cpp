@@ -3,7 +3,7 @@
 
 bool Gamestate::_check_initialization() {
     if (!_game_map.is_initialized() ||
-        (_num_players == 0) || (_players == nullptr)) {
+        (_num_players == 0) || (_player == nullptr)) {
         return false;
     }
     return true;
@@ -13,7 +13,7 @@ void _resize_players(int size) {
     // todo : implement
 }
 
-void Gamestate::_start_next_turn(OUTCOMES outcome) {
+void Gamestate::_start_next_turn(OUTCOME outcome) {
     switch (outcome) {
     case OUT_SKIP:
     case OUT_PASS:
@@ -37,54 +37,39 @@ void Gamestate::_start_next_turn(OUTCOMES outcome) {
 bool Gamestate::_wound_other_players(int x, int y, int player_id) {
     bool _had_other_players = false;
     for (int i = 0; i < _num_players; i++) {
-        if ((_players[i]->get_x_pos() == x) &&
-            (_players[i]->get_y_pos() == y) &&
+        if ((_player[i]->get_x_pos() == x) &&
+            (_player[i]->get_y_pos() == y) &&
             (i != player_id)) {
             _had_other_players = true;
-            _players[i]->take_damage(1);
+            _player[i]->take_damage(1);
         }
     }
     return _had_other_players;
 }
 
 Gamestate::Gamestate() :
-    _num_treasures(0), _treasures(nullptr),
-    _player_turn(0), _num_players(0), _players(nullptr)
+    _num_treasures(0), _treasure(nullptr),
+    _num_players(0), _player(nullptr),
+    _player_turn(0)
     {}
 
 Gamestate::~Gamestate() {
     _game_map.~GameMap();
-    delete[] _treasures;
-    delete[] _players;
-}
-
-void Gamestate::init(int x_size, int y_size,
-                     int num_treasures, int num_players) {
-    _game_map.init(x_size, y_size);
-
-    _num_treasures = num_treasures;
-    _treasures = new Treasure[_num_treasures];
-
-    _num_players = num_players;
-    _players = new Player*[_num_players];
-}
-
-void Gamestate::set_players(Player **players) {
-    for (int i = 0; i < _num_players; ++i) {
-        _players[i] = players[i];
-    }
+    delete[] _treasure;
+    delete[] _player;
 }
 
 int Gamestate::get_player_id(const Player &player) const {
     for (int i = 0; i < _num_players; ++i) {
-        if (_players[i] == &player) {
+        if (_player[i] == &player) {
             return i;
         }
     }
     return -1;
 }
 
-bool Gamestate::generate_map() {
+bool Gamestate::generate_map(int x_size, int y_size) {
+    _game_map.init(x_size, y_size);
     // todo : pass parameters
     return _game_map.generate();
 }
@@ -93,7 +78,11 @@ int Gamestate::load_map(const char *filename) {
     return _game_map.load(filename);
 }
 
-OUTCOMES Gamestate::attempt_move(int player_id, player_move_t p_move) {
+int Gamestate::save_map(const char *filename) const {
+    return _game_map.save(filename);
+}
+
+OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
     if (!_check_initialization()) {
         return OUT_INVALID;
     }
@@ -102,8 +91,8 @@ OUTCOMES Gamestate::attempt_move(int player_id, player_move_t p_move) {
         return OUT_IGNORED;
     }
 
-    OUTCOMES outcome = OUT_INVALID;
-    Player &player = *_players[player_id];
+    OUTCOME outcome = OUT_INVALID;
+    Player &player = *_player[player_id];
     int player_x = player.get_x_pos();
     int player_y = player.get_y_pos();
 
@@ -120,8 +109,8 @@ OUTCOMES Gamestate::attempt_move(int player_id, player_move_t p_move) {
         }
         // attempt to move player
         if (_game_map.can_move(player_x, player_y, p_move.direction)) {
-            player_x += DIRECTIONS_X[p_move.direction];
-            player_y += DIRECTIONS_Y[p_move.direction];
+            player_x += DIRECTION_DX[p_move.direction];
+            player_y += DIRECTION_DY[p_move.direction];
             player.set_pos(player_x, player_y);
             // todo : move player's treasure with them
             outcome = OUT_PASS;

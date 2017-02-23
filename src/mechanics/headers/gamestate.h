@@ -3,18 +3,19 @@
 
 #include "game_map.h"
 #include "player.h"
+#include "treasure.h"
 
 
-enum OUTCOMES {
+enum OUTCOME {
     OUT_INVALID = 0, OUT_IGNORED, OUT_NO_TURN,
     OUT_SKIP,
     OUT_PASS, OUT_WALL,
     OUT_MISS, OUT_WOUND, OUT_KILL,
     OUT_BOMB_SUCCESS, OUT_BOMB_FAIL,
-    OUT_NUM_OUTCOMES
+    OUT_NUMBER
 };
 
-const char outcomes_strings[OUT_NUM_OUTCOMES][30] = {
+const char OUTCOME_STRING[OUT_NUMBER][30] = {
     "your command is invalid",
     "command ignored",
     "it is not your turn",
@@ -34,17 +35,17 @@ class Gamestate {
     GameMap _game_map;
 
     int _num_treasures;
-    Treasure *_treasures;
+    Treasure *_treasure;
 
-    int _player_turn;
     int _num_players;
-    Player **_players;
+    Player **_player;
+    int _player_turn;
 
     bool _check_initialization();
 
     void _resize_players(int size);
 
-    void _start_next_turn(OUTCOMES outcome);
+    void _start_next_turn(OUTCOME outcome);
     bool _wound_other_players(int x, int y, int player_id);
 
  public:
@@ -52,16 +53,15 @@ class Gamestate {
 
     ~Gamestate();
 
-    void init(int x_size, int y_size, int num_treasures, int num_players);
-
-    void set_players(Player **players);
+    int connect_player();
 
     int get_player_id(const Player &player) const;
 
-    bool generate_map();
+    bool generate_map(int x_size, int y_size);
     int load_map(const char *filename);
+    int save_map(const char *filename) const;
 
-    OUTCOMES attempt_move(int player_id, player_move_t p_move);
+    OUTCOME request_move(int player_id, player_move_t p_move);
 };
 
 #endif  // SRC_MECHANICS_HEADERS_GAMESTATE_H_

@@ -7,16 +7,23 @@
 enum MAP_TILE_TYPES {
     MTT_UNDEFINED = -1,
     MTT_FREE, MTT_HOLE,
-    MTT_RIVER, MTT_RIVER_SOURCE, MTT_RIVER_MOUTH,
-    MTT_MEDBAY, MTT_ARMORY, MTT_EXIT
+    MTT_RIVER, MTT_RIVER_START, MTT_RIVER_END,
+    MTT_MEDBAY, MTT_ARMORY, MTT_EXIT,
+    MTT_NUMBER
 };
+
+const char MTT_SYMBOLS[MTT_NUMBER] = {
+    'F', 'H', 'R', 'S', 'E', 'M', 'A', 'e'
+};
+
+MAP_TILE_TYPES get_tile_type_by_symbol(char c);
 
 
 class MapTile {
  private:
     MAP_TILE_TYPES _type;
     MapTile *_next;
-    MapWall _walls[DIR_NUM_DIRECTIONS];
+    MapWall _walls[DIR_NUMBER];
 
  public:
     MapTile();
@@ -26,12 +33,12 @@ class MapTile {
 
     MAP_TILE_TYPES get_type() const;
     MapTile* get_next() const;
-    bool has_wall(DIRECTIONS dir) const;
+    bool has_wall(DIRECTION dir) const;
 
     void set_type(MAP_TILE_TYPES type);
     void set_next(MapTile *next);
     bool add_wall(MapWall wall);
-    bool destroy_wall_in_direction(DIRECTIONS dir);
+    bool destroy_wall_in_direction(DIRECTION dir);
 };
 
 #endif  // SRC_MECHANICS_HEADERS_MAP_TILE_H_

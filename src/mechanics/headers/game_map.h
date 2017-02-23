@@ -27,7 +27,7 @@ class GameMap {
     int load(const char *filename);
     int save(const char *filename) const;
 
-    bool can_move(int from_x, int from_y, DIRECTIONS dir) const;
+    bool can_move(int from_x, int from_y, DIRECTION dir) const;
 };
 
 #endif  // SRC_MECHANICS_HEADERS_GAME_MAP_H_

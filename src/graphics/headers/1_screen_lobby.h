@@ -6,11 +6,8 @@
 
 SCREEN_ID lobby(Gamestate *gamestate) {
     gamestate = new Gamestate();
-    // todo :
-    // gamestate.init
-    // <create player list>
-    // gamestate.set_players
-    // gamestate.init();
+
+    int map_size_x = 5, map_size_y = 5;
 
     return SCR_GAME;
 }

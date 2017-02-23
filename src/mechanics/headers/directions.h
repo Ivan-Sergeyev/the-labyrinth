@@ -1,22 +1,22 @@
 #ifndef SRC_MECHANICS_HEADERS_DIRECTIONS_H_
 #define SRC_MECHANICS_HEADERS_DIRECTIONS_H_
 
-enum DIRECTIONS {
-    DIR_NONE = -1, DIR_LEFT, DIR_UP, DIR_DOWN, DIR_RIHGT, DIR_NUM_DIRECTIONS
+enum DIRECTION {
+    DIR_NONE = -1, DIR_LEFT, DIR_UP, DIR_DOWN, DIR_RIHGT, DIR_NUMBER
 };
 
-const int DIRECTIONS_X[DIR_NUM_DIRECTIONS] = {
+const int DIRECTION_DX[DIR_NUMBER] = {
     -1, 0, 0, 1
 };
 
-const int DIRECTIONS_Y[DIR_NUM_DIRECTIONS] = {
+const int DIRECTION_DY[DIR_NUMBER] = {
     0, -1, 1, 0
 };
 
-const char DIRECTIONS_STRINGS[DIR_NUM_DIRECTIONS][6] = {
+const char DIRECTION_STRING[DIR_NUMBER][6] = {
     "left", "up", "down", "right"
 };
 
-bool is_direction(const DIRECTIONS &direction);
+bool is_direction(const DIRECTION &direction);
 
 #endif  // SRC_MECHANICS_HEADERS_DIRECTIONS_H_

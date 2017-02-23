@@ -12,7 +12,7 @@ player_move_t::player_move_t() :
 player_move_t::player_move_t(const player_move_t &other) :
     action(other.action), direction(other.direction) {}
 
-player_move_t::player_move_t(const PLAYER_ACTIONS &a, const DIRECTIONS &d) :
+player_move_t::player_move_t(const PLAYER_ACTION &a, const DIRECTION &d) :
     action(a), direction(d) {}
 
 player_move_t& player_move_t::operator = (const player_move_t &other) {
@@ -24,7 +24,7 @@ player_move_t& player_move_t::operator = (const player_move_t &other) {
 }
 
 
-PLAYER_HEALTH_STATES Player::_get_health_state() const {
+PLAYER_HEALTH_STATE Player::_get_health_state() const {
     if (_health == HEALTH_MAX) {
         return PHS_WELL;
     }
@@ -43,8 +43,7 @@ int Player::_health_in_range(int health) const {
 
 Player::Player() :
     _x_pos(0), _y_pos(0), _health(0),
-    _bombs(0), _bullets(0), _knives(0),
-    _has_treasure(false), _treasure(nullptr) {}
+    _bombs(0), _bullets(0), _knives(0) {}
 
 int Player::get_x_pos() const {
     return _x_pos;
@@ -68,14 +67,6 @@ int Player::get_bullets() const {
 
 int Player::get_knives() const {
     return _knives;
-}
-
-bool Player::has_treasure() const {
-    return _has_treasure;
-}
-
-Treasure* Player::carried_treasure() const {
-    return _treasure;
 }
 
 void Player::set_pos(int x, int y) {
@@ -129,14 +120,4 @@ int Player::remove_knives(int amount) {
     int knives_removed = min(_knives, amount);
     _knives -= knives_removed;
     return knives_removed;
-}
-
-bool Player::add_treasure(Treasure *treasure) {
-    if (_has_treasure || _get_health_state() != PHS_WELL) {
-        return false;
-    }
-
-    _has_treasure = true;
-    _treasure = treasure;
-    return true;
 }
