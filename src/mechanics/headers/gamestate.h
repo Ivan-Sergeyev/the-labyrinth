@@ -2,7 +2,7 @@
 #define SRC_MECHANICS_HEADERS_GAMESTATE_H_
 
 #include "game_map.h"
-#include "player.h"
+#include "player_piece.h"
 #include "treasure.h"
 
 
@@ -34,16 +34,16 @@ class Gamestate {
  private:
     GameMap _game_map;
 
+    int _num_players;
+    PlayerPiece _player_pieces[1];
+    int _player_turn;
+
     int _num_treasures;
     Treasure *_treasure;
 
-    int _num_players;
-    Player **_player;
-    int _player_turn;
+    // todo : interfaces for talking to local and remote players
 
     bool _check_initialization();
-
-    void _resize_players(int size);
 
     void _start_next_turn(OUTCOME outcome);
     bool _wound_other_players(int x, int y, int player_id);
@@ -52,10 +52,6 @@ class Gamestate {
     Gamestate();
 
     ~Gamestate();
-
-    int connect_player();
-
-    int get_player_id(const Player &player) const;
 
     bool generate_map(int x_size, int y_size);
     int load_map(const char *filename);

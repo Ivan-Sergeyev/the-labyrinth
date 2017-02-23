@@ -163,7 +163,7 @@ int GameMap::_load_holes(std::ifstream &fin) {
     return 0;
 }
 
-void GameMap::_save_tiles(std::ofstream &fout) {
+void GameMap::_save_tiles(std::ofstream &fout) const {
     MapTile *tile, *next_tile;
     int offset;
 
@@ -194,18 +194,19 @@ void GameMap::_save_tiles(std::ofstream &fout) {
 
         for (int y = 0; y < _y_size - 1; ++y) {
             tile = &(_tiles[x][y]);
+            ;
         }
     }
 
     fout << '\n';
 }
 
-void GameMap::_save_exits(std::ofstream &fout) {
-    ;
+void GameMap::_save_exits(std::ofstream &fout) const {
+    // todo : implement
 }
 
-void GameMap::_save_holes(std::ofstream &fout) {
-    ;
+void GameMap::_save_holes(std::ofstream &fout) const {
+    // todo : implement
 }
 
 GameMap::GameMap() :

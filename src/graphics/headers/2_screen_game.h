@@ -77,6 +77,7 @@ SCREEN_ID game(Gamestate *gamestate) {
                                 _MAX_HISTORY_LEN, _MAX_MSG_LEN);
 
     // player_id = gamestate.get_player_id
+    // todo : add interface for talking to gamestate
     int player_id = 0;
     player_move_t p_move;
     OUTCOME outcome;
@@ -97,6 +98,7 @@ SCREEN_ID game(Gamestate *gamestate) {
         _msg_hstr.refresh();
 
         if (!strncmp(msg, "exit", _MAX_MSG_LEN)) {
+            delete gamestate;
             return SCR_EXIT;
         }
     }

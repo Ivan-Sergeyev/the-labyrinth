@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "../headers/player.h"
+#include "../headers/player_piece.h"
 
 using std::max;
 using std::min;
@@ -24,7 +24,7 @@ player_move_t& player_move_t::operator = (const player_move_t &other) {
 }
 
 
-PLAYER_HEALTH_STATE Player::_get_health_state() const {
+PLAYER_HEALTH_STATE PlayerPiece::_get_health_state() const {
     if (_health == HEALTH_MAX) {
         return PHS_WELL;
     }
@@ -37,86 +37,86 @@ PLAYER_HEALTH_STATE Player::_get_health_state() const {
     return PHS_ERROR;
 }
 
-int Player::_health_in_range(int health) const {
+int PlayerPiece::_health_in_range(int health) const {
     return max(min(health, HEALTH_MAX), HEALTH_MIN);
 }
 
-Player::Player() :
-    _x_pos(0), _y_pos(0), _health(0),
-    _bombs(0), _bullets(0), _knives(0) {}
+PlayerPiece::PlayerPiece() :
+    _x_pos(0), _y_pos(0), _health(HEALTH_START),
+    _bombs(START_BOMBS), _bullets(START_BULLETS), _knives(START_KNIVES) {}
 
-int Player::get_x_pos() const {
+int PlayerPiece::get_x_pos() const {
     return _x_pos;
 }
 
-int Player::get_y_pos() const {
+int PlayerPiece::get_y_pos() const {
     return _y_pos;
 }
 
-bool Player::is_alive() const {
+bool PlayerPiece::is_alive() const {
     return _get_health_state() != PHS_DEAD;
 }
 
-int Player::get_bombs() const {
+int PlayerPiece::get_bombs() const {
     return _bombs;
 }
 
-int Player::get_bullets() const {
+int PlayerPiece::get_bullets() const {
     return _bullets;
 }
 
-int Player::get_knives() const {
+int PlayerPiece::get_knives() const {
     return _knives;
 }
 
-void Player::set_pos(int x, int y) {
+void PlayerPiece::set_pos(int x, int y) {
     _x_pos = x;
     _y_pos = y;
 }
 
-void Player::set_health(int amount) {
+void PlayerPiece::set_health(int amount) {
     _health = _health_in_range(amount);
 }
 
-void Player::take_damage(int amount) {
+void PlayerPiece::take_damage(int amount) {
     _health = _health_in_range(_health - amount);
 }
 
-void Player::heal(int amount) {
+void PlayerPiece::heal(int amount) {
     _health = _health_in_range(_health + amount);
 }
 
-int Player::add_bombs(int amount) {
+int PlayerPiece::add_bombs(int amount) {
     int bombs_added = min(MAX_BOMBS - _bombs, amount);
     _bombs += bombs_added;
     return bombs_added;
 }
 
-int Player::add_bullets(int amount) {
+int PlayerPiece::add_bullets(int amount) {
     int bullets_added = min(MAX_BULLETS - _bullets, amount);
     _bullets += bullets_added;
     return bullets_added;
 }
 
-int Player::add_knives(int amount) {
+int PlayerPiece::add_knives(int amount) {
     int knives_added = min(MAX_KNIVES - _knives, amount);
     _knives += knives_added;
     return knives_added;
 }
 
-int Player::remove_bombs(int amount) {
+int PlayerPiece::remove_bombs(int amount) {
     int bombs_removed = min(_bombs, amount);
     _bombs -= bombs_removed;
     return bombs_removed;
 }
 
-int Player::remove_bullets(int amount) {
+int PlayerPiece::remove_bullets(int amount) {
     int bullets_removed = min(_bullets, amount);
     _bullets -= bullets_removed;
     return bullets_removed;
 }
 
-int Player::remove_knives(int amount) {
+int PlayerPiece::remove_knives(int amount) {
     int knives_removed = min(_knives, amount);
     _knives -= knives_removed;
     return knives_removed;

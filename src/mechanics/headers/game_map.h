@@ -22,9 +22,9 @@ class GameMap {
     int _load_exits(std::ifstream &fin);
     int _load_holes(std::ifstream &fin);
 
-    void _save_tiles(std::ofstream &fout);
-    void _save_exits(std::ofstream &fout);
-    void _save_holes(std::ofstream &fout);
+    void _save_tiles(std::ofstream &fout) const;
+    void _save_exits(std::ofstream &fout) const;
+    void _save_holes(std::ofstream &fout) const;
 
  public:
     GameMap();
