@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../headers/map_wall.h"
 
 
@@ -38,6 +39,7 @@ bool MapWall::get_enabled() const {
 }
 
 bool MapWall::exists() const {
+    std::cerr << _direction << ' ' << _type << ' ' << _enabled << '\n';
     return _direction != DIR_NONE && _type != WT_UNDEFINED && _enabled;
 }
 

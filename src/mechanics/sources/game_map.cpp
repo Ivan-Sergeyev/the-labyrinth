@@ -41,7 +41,7 @@ int GameMap::_load_tiles(std::ifstream &fin) {
 
     fin >> _x_size >> _y_size;
 
-    for (int x = 0; x < 2 * _x_size - 1; ++x) {
+    for (int y = 0; y < 2 * _y_size - 1; ++y) {
         while (1) {
             std::getline(fin, line);
             if (!line.empty()) {
@@ -50,17 +50,17 @@ int GameMap::_load_tiles(std::ifstream &fin) {
         }
 
         // std::cerr << "line = " << line << '\n';
-        if (line.length() != (unsigned int) 2 * _y_size - 1) {
+        if (line.length() != (unsigned int) 2 * _x_size - 1) {
             // std::cerr << "incorrect line length\n";
             return 3;
         }
 
-        if (x % 2 == 0) {
+        if (y % 2 == 0) {
             // std::cerr << "-- even line --\n";
 
             // tiles
-            for (int y = 0; y < 2 * _y_size - 1; y += 2) {
-                type = get_tile_type_by_symbol(line[y]);
+            for (int x = 0; x < 2 * _x_size - 1; x += 2) {
+                type = get_tile_type_by_symbol(line[x]);
                 if (type == MTT_UNDEFINED) {
                     std::cerr << "undefined tile symbol\n";
                     return 3;
@@ -71,8 +71,8 @@ int GameMap::_load_tiles(std::ifstream &fin) {
             }
 
             // vertical walls and horizontal directions
-            for (int y = 1; y < 2 * _y_size - 1; y += 2) {
-                switch (line[y]) {
+            for (int x = 1; x < 2 * _x_size - 1; x += 2) {
+                switch (line[x]) {
                 case '|':
                     // std::cerr << "vertical wall\n";
                     wall_here = MapWall(DIR_RIGHT, WT_DESTRUCTIBLE);
@@ -100,14 +100,16 @@ int GameMap::_load_tiles(std::ifstream &fin) {
             // std::cerr << "-- odd line --\n";
 
             // horizontal walls and vertical directions
-            for (int y = 0; y < 2 * _y_size - 1; y += 2) {
-                switch (line[y]) {
+            for (int x = 0; x < 2 * _x_size - 1; x += 2) {
+                switch (line[x]) {
                 case '-':
-                    // std::cerr << "horizontal wall\n";
                     wall_here = MapWall(DIR_DOWN, WT_DESTRUCTIBLE);
                     wall_there = MapWall(DIR_UP, WT_DESTRUCTIBLE);
                     _tiles[x / 2][y / 2].add_wall(wall_here);
                     _tiles[x / 2][y / 2 + 1].add_wall(wall_there);
+                    std::cerr << "horizontal wall\n";
+                    std::cerr << "cells are " << x / 2 << ' ' << y / 2 << " and "
+                              << x / 2 << ' ' << y / 2 + 1 << '\n';
                     break;
                 case 'V':
                     // std::cerr << "flow down\n";
@@ -189,18 +191,17 @@ int GameMap::_load_holes(std::ifstream &fin) {
 }
 
 void GameMap::_add_outer_walls() {
-    MapWall wall_up(DIR_UP, WT_MONOLYTH);
-    MapWall wall_down(DIR_DOWN, WT_MONOLYTH);
+    std::cerr << "add outer walls\n";
     for (int x = 0; x < _x_size; ++x) {
-        _tiles[x][0].add_wall(wall_down);
-        _tiles[x][_y_size - 1].add_wall(wall_up);
+        std::cerr << "x = " << x << '\n';
+        _tiles[x][0].add_wall(MapWall(DIR_UP, WT_MONOLYTH));
+        _tiles[x][_y_size - 1].add_wall(MapWall(DIR_DOWN, WT_MONOLYTH));
     }
 
-    MapWall wall_left(DIR_LEFT, WT_MONOLYTH);
-    MapWall wall_right(DIR_RIGHT, WT_MONOLYTH);
     for (int y = 0; y < _y_size; ++y) {
-        _tiles[0][y].add_wall(wall_right);
-        _tiles[_x_size - 1][y].add_wall(wall_left);
+        std::cerr << "y = " << y << '\n';
+        _tiles[0][y].add_wall(MapWall(DIR_LEFT, WT_MONOLYTH));
+        _tiles[_x_size - 1][y].add_wall(MapWall(DIR_RIGHT, WT_MONOLYTH));
     }
 }
 
@@ -319,6 +320,7 @@ int GameMap::load(const char *filename) {
         if (subroutine_ret) {
             return subroutine_ret;
         }
+        _add_outer_walls();
 
         subroutine_ret = _load_exits(fin);
         if (subroutine_ret) {
@@ -335,7 +337,6 @@ int GameMap::load(const char *filename) {
     }
 
     fin.close();
-    _add_outer_walls();
 
     return 0;
 }
@@ -362,5 +363,6 @@ int GameMap::save(const char *filename) const {
 }
 
 bool GameMap::can_move(int from_x, int from_y, DIRECTION dir) const {
-    return !_tiles[from_x][from_y].has_wall(dir);
+    std::cerr << "check " << from_x << ' ' << from_y << ' ' << dir << '\n';
+    return !(_tiles[from_x][from_y].has_wall(dir));
 }

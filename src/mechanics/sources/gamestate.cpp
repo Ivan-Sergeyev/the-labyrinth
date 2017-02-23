@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../headers/gamestate.h"
 
 
@@ -80,6 +81,7 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
     PlayerPiece &player = _player_pieces[player_id];
     int player_x = player.get_x_pos();
     int player_y = player.get_y_pos();
+    std::cerr << "moving " << player_x << ' ' << player_y << '\n';
 
     switch (p_move.action) {
     case ACT_NONE:
