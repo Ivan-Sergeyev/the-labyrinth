@@ -1,5 +1,5 @@
-#ifndef SRC_SCREENS_H_
-#define SRC_SCREENS_H_
+#ifndef SRC_GRAPHICS_HEADERS_SCREENS_H_
+#define SRC_GRAPHICS_HEADERS_SCREENS_H_
 
 #include <ncurses.h>
 
@@ -13,4 +13,4 @@ enum SCREEN_ID {SC_EXIT = -1, SC_MAIN_MENU, SC_GAME, SC_NUM_SCREENS};
 
 SCREEN_ID (* const screens[SC_NUM_SCREENS])() = {main_menu, game};
 
-#endif  // SRC_SCREENS_H_
+#endif  // SRC_GRAPHICS_HEADERS_SCREENS_H_

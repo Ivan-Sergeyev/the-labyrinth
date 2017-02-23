@@ -1,5 +1,5 @@
-#ifndef SRC_GAMESTATE_H_
-#define SRC_GAMESTATE_H_
+#ifndef SRC_MECHANICS_HEADERS_GAMESTATE_H_
+#define SRC_MECHANICS_HEADERS_GAMESTATE_H_
 
 #include "map_tile.h"
 #include "player.h"
@@ -49,6 +49,7 @@ class Gamestate {
     bool _has_wall(int x, int y, DIRECTIONS direction);
     bool _wound_other_players(int x, int y, int player_id);
     bool _check_initialization();
+
  public:
     Gamestate();
 
@@ -64,4 +65,4 @@ class Gamestate {
     OUTCOMES attempt_move(int player_id, player_move_t p_move);
 };
 
-#endif  // SRC_GAMESTATE_H_
+#endif  // SRC_MECHANICS_HEADERS_GAMESTATE_H_

@@ -1,5 +1,5 @@
-#ifndef SRC_TREASURE_H_
-#define SRC_TREASURE_H_
+#ifndef SRC_MECHANICS_HEADERS_TREASURE_H_
+#define SRC_MECHANICS_HEADERS_TREASURE_H_
 
 class Treasure {
  private:
@@ -7,11 +7,11 @@ class Treasure {
     bool _is_fake;
 
  public:
-    Treasure(); 
+    Treasure();
 
     void set_fake(bool fake = true);
 
     void set_pos(int x, int y);
 };
 
-#endif  // SRC_TREASURE_H_
+#endif  // SRC_MECHANICS_HEADERS_TREASURE_H_

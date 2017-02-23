@@ -1,5 +1,5 @@
-#ifndef SRC_0_SCREEN_MAIN_MENU_H_
-#define SRC_0_SCREEN_MAIN_MENU_H_
+#ifndef SRC_GRAPHICS_HEADERS_0_SCREEN_MAIN_MENU_H_
+#define SRC_GRAPHICS_HEADERS_0_SCREEN_MAIN_MENU_H_
 
 #include "screens.h"
 
@@ -71,4 +71,4 @@ SCREEN_ID main_menu() {
     }
 }
 
-#endif  // SRC_0_SCREEN_MAIN_MENU_H_
+#endif  // SRC_GRAPHICS_HEADERS_0_SCREEN_MAIN_MENU_H_

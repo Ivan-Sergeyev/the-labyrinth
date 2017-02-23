@@ -1,5 +1,5 @@
-#ifndef SRC_MAP_TILE_H_
-#define SRC_MAP_TILE_H_
+#ifndef SRC_MECHANICS_HEADERS_MAP_TILE_H_
+#define SRC_MECHANICS_HEADERS_MAP_TILE_H_
 
 #include "map_wall.h"
 
@@ -29,4 +29,4 @@ class MapTile {
     bool destroy_wall_in_direction(DIRECTIONS dir);
 };
 
-#endif  // SRC_MAP_TILE_H_
+#endif  // SRC_MECHANICS_HEADERS_MAP_TILE_H_

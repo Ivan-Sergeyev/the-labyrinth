@@ -1,5 +1,5 @@
-#ifndef SRC_PLAYER_H_
-#define SRC_PLAYER_H_
+#ifndef SRC_MECHANICS_HEADERS_PLAYER_H_
+#define SRC_MECHANICS_HEADERS_PLAYER_H_
 
 #include "directions.h"
 #include "treasure.h"
@@ -90,4 +90,4 @@ class Player {
     bool add_treasure(Treasure *treasure);
 };
 
-#endif  // SRC_PLAYER_H_
+#endif  // SRC_MECHANICS_HEADERS_PLAYER_H_

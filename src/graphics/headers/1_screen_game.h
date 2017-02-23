@@ -1,5 +1,5 @@
-#ifndef SRC_1_SCREEN_GAME_H_
-#define SRC_1_SCREEN_GAME_H_
+#ifndef SRC_GRAPHICS_HEADERS_1_SCREEN_GAME_H_
+#define SRC_GRAPHICS_HEADERS_1_SCREEN_GAME_H_
 
 #include <cstring>
 #include <stdio.h>
@@ -105,4 +105,4 @@ SCREEN_ID game() {
     }
 }
 
-#endif  // SRC_1_SCREEN_GAME_H_
+#endif  // SRC_GRAPHICS_HEADERS_1_SCREEN_GAME_H_

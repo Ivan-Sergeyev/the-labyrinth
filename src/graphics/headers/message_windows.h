@@ -1,5 +1,5 @@
-#ifndef SRC_MESSAGE_WINDOWS_H_
-#define SRC_MESSAGE_WINDOWS_H_
+#ifndef SRC_GRAPHICS_HEADERS_MESSAGE_WINDOWS_H_
+#define SRC_GRAPHICS_HEADERS_MESSAGE_WINDOWS_H_
 
 #include "string.h"
 
@@ -87,4 +87,4 @@ class MessageInputBox : public BoxWindow {
     }
 };
 
-#endif  // SRC_MESSAGE_WINDOWS_H_
+#endif  // SRC_GRAPHICS_HEADERS_MESSAGE_WINDOWS_H_
