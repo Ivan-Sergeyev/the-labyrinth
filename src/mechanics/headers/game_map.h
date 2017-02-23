@@ -21,6 +21,7 @@ class GameMap {
     int _load_tiles(std::ifstream &fin);
     int _load_exits(std::ifstream &fin);
     int _load_holes(std::ifstream &fin);
+    void _add_outer_walls();
 
     void _save_tiles(std::ofstream &fout) const;
     void _save_exits(std::ofstream &fout) const;

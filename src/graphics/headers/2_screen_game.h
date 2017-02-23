@@ -98,7 +98,6 @@ SCREEN_ID game(Gamestate **gamestate) {
         _msg_hstr.refresh();
 
         if (!strncmp(msg, "exit", _MAX_MSG_LEN)) {
-            delete gamestate;
             return SCR_EXIT;
         }
     }

@@ -22,6 +22,9 @@ void main_loop() {
         screen_next = screens[screen_cur](&gamestate);
 
         if (screen_next == SCR_EXIT) {
+            if (gamestate) {
+                delete gamestate;
+            }
             break;
         }
 
