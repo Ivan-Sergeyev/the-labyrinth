@@ -64,3 +64,8 @@ bool MapTile::add_wall(MapWall wall) {
 bool MapTile::destroy_wall_in_direction(DIRECTION dir) {
     return _walls[dir].destroy();
 }
+
+
+MapWall& MapTile::get_wall(DIRECTION dir) {
+    return _walls[dir];
+}
