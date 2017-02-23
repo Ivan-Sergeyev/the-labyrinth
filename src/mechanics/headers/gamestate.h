@@ -1,19 +1,18 @@
 #ifndef SRC_MECHANICS_HEADERS_GAMESTATE_H_
 #define SRC_MECHANICS_HEADERS_GAMESTATE_H_
 
-#include "map_tile.h"
+#include "game_map.h"
 #include "player.h"
 
 
 enum OUTCOMES {
-    OUT_INVALID = 0, OUT_IGNORE, OUT_NO_TURN,
+    OUT_INVALID = 0, OUT_IGNORED, OUT_NO_TURN,
     OUT_SKIP,
     OUT_PASS, OUT_WALL,
     OUT_MISS, OUT_WOUND, OUT_KILL,
     OUT_BOMB_SUCCESS, OUT_BOMB_FAIL,
     OUT_NUM_OUTCOMES
 };
-
 
 const char outcomes_strings[OUT_NUM_OUTCOMES][30] = {
     "your command is invalid",
@@ -30,37 +29,37 @@ const char outcomes_strings[OUT_NUM_OUTCOMES][30] = {
 };
 
 
-
-bool retry_turn(const OUTCOMES &outcome);
-
 class Gamestate {
  private:
-    int _x_size, _y_size;
-
-    MapTile **_tiles;
+    GameMap _game_map;
 
     int _num_treasures;
     Treasure *_treasures;
 
+    int _player_turn;
     int _num_players;
     Player **_players;
 
-    void _pass_turn_to_next_player();
-    bool _has_wall(int x, int y, DIRECTIONS direction);
-    bool _wound_other_players(int x, int y, int player_id);
     bool _check_initialization();
+
+    void _resize_players(int size);
+
+    void _start_next_turn(OUTCOMES outcome);
+    bool _wound_other_players(int x, int y, int player_id);
 
  public:
     Gamestate();
 
     ~Gamestate();
+
     void init(int x_size, int y_size, int num_treasures, int num_players);
 
     void set_players(Player **players);
 
-    int get_player_id(const Player &player);
+    int get_player_id(const Player &player) const;
 
-    void generate_map();
+    bool generate_map();
+    int load_map(const char *filename);
 
     OUTCOMES attempt_move(int player_id, player_move_t p_move);
 };

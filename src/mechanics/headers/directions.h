@@ -5,7 +5,15 @@ enum DIRECTIONS {
     DIR_NONE = -1, DIR_LEFT, DIR_UP, DIR_DOWN, DIR_RIHGT, DIR_NUM_DIRECTIONS
 };
 
-const char directions_strings[DIR_NUM_DIRECTIONS][6] = {
+const int DIRECTIONS_X[DIR_NUM_DIRECTIONS] = {
+    -1, 0, 0, 1
+};
+
+const int DIRECTIONS_Y[DIR_NUM_DIRECTIONS] = {
+    0, -1, 1, 0
+};
+
+const char DIRECTIONS_STRINGS[DIR_NUM_DIRECTIONS][6] = {
     "left", "up", "down", "right"
 };
 

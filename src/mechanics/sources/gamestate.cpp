@@ -1,15 +1,37 @@
 #include "../headers/gamestate.h"
 
-bool retry_turn(const OUTCOMES &outcome) {
-    return outcome == OUT_INVALID || outcome == OUT_NUM_OUTCOMES;
+
+bool Gamestate::_check_initialization() {
+    if (!_game_map.is_initialized() ||
+        (_num_players == 0) || (_players == nullptr)) {
+        return false;
+    }
+    return true;
 }
 
-void Gamestate::_pass_turn_to_next_player() {
+void _resize_players(int size) {
     // todo : implement
 }
 
-bool Gamestate::_has_wall(int x, int y, DIRECTIONS direction) {
-    return _tiles[x][y].has_wall(direction);
+void Gamestate::_start_next_turn(OUTCOMES outcome) {
+    switch (outcome) {
+    case OUT_SKIP:
+    case OUT_PASS:
+    case OUT_WALL:
+    case OUT_MISS:
+    case OUT_WOUND:
+    case OUT_KILL:
+    case OUT_BOMB_SUCCESS:
+    case OUT_BOMB_FAIL:
+        _player_turn = (_player_turn + 1) % _num_players;
+        // todo : change positions of treasures
+        break;
+    case OUT_INVALID:
+    case OUT_IGNORED:
+    case OUT_NO_TURN:
+    default:
+        break;
+    }
 }
 
 bool Gamestate::_wound_other_players(int x, int y, int player_id) {
@@ -25,47 +47,26 @@ bool Gamestate::_wound_other_players(int x, int y, int player_id) {
     return _had_other_players;
 }
 
-bool Gamestate::_check_initialization() {
-    if ((_x_size == 0) || (_y_size == 0) ||
-        (_tiles == nullptr) ||
-        (_num_players == 0) || (_players == nullptr)) {
-        return false;
-    }
-    return true;
-}
-
 Gamestate::Gamestate() :
-    _x_size(0), _y_size(0), _tiles(nullptr),
     _num_treasures(0), _treasures(nullptr),
-    _num_players(0), _players(nullptr)
+    _player_turn(0), _num_players(0), _players(nullptr)
     {}
 
 Gamestate::~Gamestate() {
-    if (_tiles) {
-        for (int i = 0; i < _x_size; ++i) {
-            delete[] _tiles[i];
-        }
-    delete[] _tiles;
-    }
-
+    _game_map.~GameMap();
     delete[] _treasures;
     delete[] _players;
 }
 
 void Gamestate::init(int x_size, int y_size,
                      int num_treasures, int num_players) {
-    _x_size = x_size;
-    _y_size = y_size;
-    _tiles = new MapTile*[_x_size];
-    for (int i = 0; i < _x_size; ++i) {
-        _tiles[i] = new MapTile[_y_size];
-    }
+    _game_map.init(x_size, y_size);
 
     _num_treasures = num_treasures;
-    _treasures = new Treasure[num_treasures];
+    _treasures = new Treasure[_num_treasures];
 
     _num_players = num_players;
-    _players = new Player*[num_players];
+    _players = new Player*[_num_players];
 }
 
 void Gamestate::set_players(Player **players) {
@@ -74,7 +75,7 @@ void Gamestate::set_players(Player **players) {
     }
 }
 
-int Gamestate::get_player_id(const Player &player) {
+int Gamestate::get_player_id(const Player &player) const {
     for (int i = 0; i < _num_players; ++i) {
         if (_players[i] == &player) {
             return i;
@@ -83,10 +84,13 @@ int Gamestate::get_player_id(const Player &player) {
     return -1;
 }
 
-void Gamestate::generate_map() {
-    // todo : implement
-    // todo : add other parameters -- number of special tiles of each type,
-    //        number of treasures, etc.
+bool Gamestate::generate_map() {
+    // todo : pass parameters
+    return _game_map.generate();
+}
+
+int Gamestate::load_map(const char *filename) {
+    return _game_map.load(filename);
 }
 
 OUTCOMES Gamestate::attempt_move(int player_id, player_move_t p_move) {
@@ -94,7 +98,9 @@ OUTCOMES Gamestate::attempt_move(int player_id, player_move_t p_move) {
         return OUT_INVALID;
     }
 
-    // todo : check if it is player's turn
+    if (player_id != _player_turn) {
+        return OUT_IGNORED;
+    }
 
     OUTCOMES outcome = OUT_INVALID;
     Player &player = *_players[player_id];
@@ -113,10 +119,14 @@ OUTCOMES Gamestate::attempt_move(int player_id, player_move_t p_move) {
             break;
         }
         // attempt to move player
-        if (_has_wall(player_x, player_y, p_move.direction)) {
-            outcome = OUT_WALL;
-        } else {
+        if (_game_map.can_move(player_x, player_y, p_move.direction)) {
+            player_x += DIRECTIONS_X[p_move.direction];
+            player_y += DIRECTIONS_Y[p_move.direction];
+            player.set_pos(player_x, player_y);
+            // todo : move player's treasure with them
             outcome = OUT_PASS;
+        } else {
+            outcome = OUT_WALL;
         }
         break;
     case ACT_KNIFE:
@@ -154,9 +164,7 @@ OUTCOMES Gamestate::attempt_move(int player_id, player_move_t p_move) {
         break;
     }
 
-    if (!retry_turn(outcome)) {
-        _pass_turn_to_next_player();
-    }
+    _start_next_turn(outcome);
 
     return outcome;
 }

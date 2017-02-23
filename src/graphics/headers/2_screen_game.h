@@ -1,5 +1,5 @@
-#ifndef SRC_GRAPHICS_HEADERS_1_SCREEN_GAME_H_
-#define SRC_GRAPHICS_HEADERS_1_SCREEN_GAME_H_
+#ifndef SRC_GRAPHICS_HEADERS_2_SCREEN_GAME_H_
+#define SRC_GRAPHICS_HEADERS_2_SCREEN_GAME_H_
 
 #include <cstring>
 #include <stdio.h>
@@ -28,7 +28,7 @@ player_move_t parse_input(char *str, int len) {
     }
 
     for (int i = 0; i < DIR_NUM_DIRECTIONS; ++i) {
-        if (!strcmp(directions_strings[i], word2)) {
+        if (!strcmp(DIRECTIONS_STRINGS[i], word2)) {
             direction = (DIRECTIONS)i;
             break;
         }
@@ -41,7 +41,7 @@ player_move_t parse_input(char *str, int len) {
 }
 
 
-SCREEN_ID game() {
+SCREEN_ID game(Gamestate *gamestate) {
     echo();
 
     int scr_h, scr_w;
@@ -72,14 +72,7 @@ SCREEN_ID game() {
     MessageHistoryBox _msg_hstr(mh_h, mh_w, mh_y, mh_x,
                                 _MAX_HISTORY_LEN, _MAX_MSG_LEN);
 
-    Gamestate gamestate;
-
-    // todo :
-    // gamestate.init
-    // <create player list>
-    // gamestate.set_players
     // player_id = gamestate.get_player_id
-
     int player_id = 0;
     player_move_t p_move;
     OUTCOMES outcome;
@@ -95,14 +88,14 @@ SCREEN_ID game() {
         _msg_hstr.refresh();
 
         p_move = parse_input(msg, _MAX_MSG_LEN);
-        outcome = gamestate.attempt_move(player_id, p_move);
+        outcome = gamestate->attempt_move(player_id, p_move);
         _msg_hstr.add_msg(outcomes_strings[outcome]);
         _msg_hstr.refresh();
 
         if (!strncmp(msg, "exit", _MAX_MSG_LEN)) {
-            return SC_EXIT;
+            return SCR_EXIT;
         }
     }
 }
 
-#endif  // SRC_GRAPHICS_HEADERS_1_SCREEN_GAME_H_
+#endif  // SRC_GRAPHICS_HEADERS_2_SCREEN_GAME_H_

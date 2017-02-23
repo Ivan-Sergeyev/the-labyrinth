@@ -1,14 +1,8 @@
 #include "../headers/map_wall.h"
 
 
-void MapWall::_clear() {
-    _direction = DIR_NONE;
-    _type = WT_UNDEFINED;
-    _enabled = false;
-}
-
 MapWall::MapWall() {
-    _clear();
+    clear();
 }
 
 MapWall::MapWall(DIRECTIONS dir, MAP_WALL_TYPES type, bool enabled) :
@@ -22,7 +16,13 @@ MapWall::MapWall(const MapWall &other) :
     {}
 
 MapWall::~MapWall() {
-    _clear();
+    clear();
+}
+
+void MapWall::clear() {
+    _direction = DIR_NONE;
+    _type = WT_UNDEFINED;
+    _enabled = false;
 }
 
 DIRECTIONS MapWall::get_direction() const {

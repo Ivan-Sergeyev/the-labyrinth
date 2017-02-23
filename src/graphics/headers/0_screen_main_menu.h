@@ -3,6 +3,8 @@
 
 #include "screens.h"
 
+#include "../../mechanics/headers/gamestate.h"
+
 
 enum MAIN_MENU_BUTTONS {
     MM_NEW_GAME = 0, MM_EXIT, MM_NUM_BUTTONS
@@ -31,7 +33,7 @@ void draw_menu(int highlight) {
 }
 
 
-SCREEN_ID main_menu() {
+SCREEN_ID main_menu(Gamestate *gamestate) {
     noecho();
 
     int key = 0;
@@ -51,7 +53,7 @@ SCREEN_ID main_menu() {
         case 10:  // enter
             switch (highlight) {
                 case MM_NEW_GAME:
-                    return SC_GAME;
+                    return SCR_LOBBY;
                 case MM_EXIT:
                     exit = true;
                     break;
@@ -66,7 +68,7 @@ SCREEN_ID main_menu() {
         }
 
         if (exit) {
-            return SC_EXIT;
+            return SCR_EXIT;
         }
     }
 }

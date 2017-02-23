@@ -15,21 +15,23 @@ enum MAP_TILE_TYPES {
 class MapTile {
  private:
     MAP_TILE_TYPES _type;
-    MapWall _walls[DIR_NUM_DIRECTIONS];
     MapTile *_next;
+    MapWall _walls[DIR_NUM_DIRECTIONS];
 
  public:
     MapTile();
     explicit MapTile(MAP_TILE_TYPES type);
 
+    void clear();
+
     MAP_TILE_TYPES get_type() const;
     MapTile* get_next() const;
     bool has_wall(DIRECTIONS dir) const;
 
+    void set_type(MAP_TILE_TYPES type);
     void set_next(MapTile *next);
     bool add_wall(MapWall wall);
     bool destroy_wall_in_direction(DIRECTIONS dir);
-
 };
 
 #endif  // SRC_MECHANICS_HEADERS_MAP_TILE_H_

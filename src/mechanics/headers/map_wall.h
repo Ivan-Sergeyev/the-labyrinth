@@ -16,14 +16,14 @@ class MapWall {
     MAP_WALL_TYPES _type;
     bool _enabled;
 
-    void _clear();
-
  public:
     MapWall();
     MapWall(DIRECTIONS dir, MAP_WALL_TYPES type, bool enabled = true);
     MapWall(const MapWall &other);
 
     ~MapWall();
+
+    void clear();
 
     DIRECTIONS get_direction() const;
     MAP_WALL_TYPES get_type() const;

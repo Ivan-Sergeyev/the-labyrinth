@@ -1,4 +1,5 @@
 #include "../headers/screens.h"
+#include "../../mechanics/headers/gamestate.h"
 
 
 void init_ncurses_graphics() {
@@ -11,14 +12,16 @@ void init_ncurses_graphics() {
 
 
 void main_loop() {
-    SCREEN_ID screen_cur = SC_FIRST;
+    Gamestate *gamestate;
+
+    SCREEN_ID screen_cur = SCR_FIRST;
     SCREEN_ID screen_next;
 
     while (1) {
         clear();
-        screen_next = screens[screen_cur]();
+        screen_next = screens[screen_cur](gamestate);
 
-        if (screen_next == SC_EXIT) {
+        if (screen_next == SCR_EXIT) {
             break;
         }
 
