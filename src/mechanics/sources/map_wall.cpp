@@ -50,7 +50,7 @@ bool MapWall::collides(DIRECTION dir) const {
 }
 
 bool MapWall::destroy() {
-    if (!exists()) {
+    if (!exists() || _type != WT_DESTRUCTIBLE) {
         return false;
     }
     _enabled = false;

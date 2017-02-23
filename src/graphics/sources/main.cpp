@@ -12,7 +12,7 @@ void init_ncurses_graphics() {
 
 
 void main_loop() {
-    Gamestate *gamestate;
+    Gamestate *gamestate = nullptr;
 
     SCREEN_ID screen_cur = SCR_FIRST;
     SCREEN_ID screen_next;

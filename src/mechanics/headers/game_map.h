@@ -1,6 +1,7 @@
 #ifndef SRC_MECHANICS_HEADERS_GAME_MAP_H_
 #define SRC_MECHANICS_HEADERS_GAME_MAP_H_
 
+#include <fstream>
 
 #include "map_tile.h"
 
@@ -10,8 +11,20 @@ class GameMap {
     int _x_size, _y_size;
     MapTile **_tiles;
 
+    int _num_tiles[MTT_NUMBER];
+
     void _allocate(int new_x_size, int new_y_size);
     void _deallocate();
+
+    void _clear_num_tiles();
+
+    int _load_tiles(std::ifstream &fin);
+    int _load_exits(std::ifstream &fin);
+    int _load_holes(std::ifstream &fin);
+
+    void _save_tiles(std::ofstream &fout);
+    void _save_exits(std::ofstream &fout);
+    void _save_holes(std::ofstream &fout);
 
  public:
     GameMap();
