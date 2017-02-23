@@ -318,21 +318,25 @@ int GameMap::load(const char *filename) {
 
         subroutine_ret = _load_tiles(fin);
         if (subroutine_ret) {
+            std::cerr << "failed to load tiles\n";
             return subroutine_ret;
         }
         _add_outer_walls();
 
         subroutine_ret = _load_exits(fin);
         if (subroutine_ret) {
+            std::cerr << "failed to load exits\n";
             return subroutine_ret;
         }
 
         subroutine_ret = _load_holes(fin);
         if (subroutine_ret) {
+            std::cerr << "failed to load holes\n";
             return subroutine_ret;
         }
     } catch (std::ios_base::failure &fb) {
         // todo: deliver exception message from fb.what()
+        std::cerr << "input failed: " << fb.what() << '\n';
         return 3;
     }
 
