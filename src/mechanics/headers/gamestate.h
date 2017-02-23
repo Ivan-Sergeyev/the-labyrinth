@@ -35,7 +35,7 @@ class Gamestate {
     GameMap _game_map;
 
     int _num_players;
-    PlayerPiece _player_pieces[2];
+    PlayerPiece _player_pieces[1];
     int _player_turn;
 
     int _num_treasures;
