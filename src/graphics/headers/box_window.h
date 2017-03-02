@@ -1,7 +1,7 @@
 #ifndef SRC_GRAPHICS_HEADERS_BOX_WINDOW_H_
 #define SRC_GRAPHICS_HEADERS_BOX_WINDOW_H_
 
-#include <ncurses.h>
+#include <ncurses/ncurses.h>
 
 
 class BoxWindow {

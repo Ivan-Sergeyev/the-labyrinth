@@ -1,7 +1,7 @@
 #ifndef SRC_GRAPHICS_HEADERS_SCREENS_H_
 #define SRC_GRAPHICS_HEADERS_SCREENS_H_
 
-#include <ncurses.h>
+#include <ncurses/ncurses.h>
 
 
 enum SCREEN_ID {
