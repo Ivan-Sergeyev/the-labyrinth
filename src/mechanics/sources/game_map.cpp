@@ -235,7 +235,7 @@ void GameMap::_save_tiles(std::ofstream &fout) const {
 
         for (int y = 0; y < _y_size - 1; ++y) {
             tile = &(_tiles[x][y]);
-            ;
+            // todo : implement
         }
     }
 

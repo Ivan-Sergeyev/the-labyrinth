@@ -75,12 +75,12 @@ OUTCOME Gamestate::_try_shoot(int player_id, DIRECTION dir) {
     int y = _player_pieces[player_id].get_y_pos();
 
     while (!_game_map.can_move(x, y, dir)) {
-	x += DIRECTION_DX[dir];
-	y += DIRECTION_DY[dir];
+        x += DIRECTION_DX[dir];
+        y += DIRECTION_DY[dir];
 
-	if (_wound_other_players(x, y, player_id)) {
-	    return OUT_WOUND;
-	}
+        if (_wound_other_players(x, y, player_id)) {
+            return OUT_WOUND;
+        }
     }
 
     return OUT_MISS;
@@ -99,9 +99,10 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
     PlayerPiece &player = _player_pieces[player_id];
     int player_x = player.get_x_pos();
     int player_y = player.get_y_pos();
+    DIRECTION player_d = p_move.direction;
 
-    //needed for bomb action
-    MapWall& _map_wall = _game_map.get_wall(player_x, player_y, p_move.direction);
+    // needed for bomb action
+    MapWall _map_wall = _game_map.get_wall(player_x, player_y, player_d);
 
     switch (p_move.action) {
     case ACT_NONE:
@@ -111,13 +112,13 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
         outcome = OUT_SKIP;
         break;
     case ACT_MOVE:
-        if (!is_direction(p_move.direction)) {
+        if (!is_direction(player_d)) {
             break;
         }
         // attempt to move player
-        if (_game_map.can_move(player_x, player_y, p_move.direction)) {
-            player_x += DIRECTION_DX[p_move.direction];
-            player_y += DIRECTION_DY[p_move.direction];
+        if (_game_map.can_move(player_x, player_y, player_d)) {
+            player_x += DIRECTION_DX[player_d];
+            player_y += DIRECTION_DY[player_d];
             player.set_pos(player_x, player_y);
             // todo : move player's treasure with them
             outcome = OUT_PASS;
@@ -137,24 +138,24 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
         // outcome = OUT_KILL;
         // break;
     case ACT_SHOOT:
-        if (!is_direction(p_move.direction)) {
+        if (!is_direction(player_d)) {
             break;
         }
 
-	outcome = _try_shoot(player_id, p_move.direction);
-	break;
+        outcome = _try_shoot(player_id, player_d);
+    break;
 
     case ACT_BOMB:
-        if (!is_direction(p_move.direction)) {
+        if (!is_direction(player_d)) {
             break;
         }
         // attempt to use a bomb
-	if ((!_map_wall.exists()) || (_map_wall.get_type() != WT_DESTRUCTIBLE)) {
-            outcome = OUT_BOMB_FAIL;
-	}
-	else {
-            outcome = OUT_BOMB_SUCCESS;
-	}
+        if ((!_map_wall.exists()) ||
+            (_map_wall.get_type() != WT_DESTRUCTIBLE)) {
+                outcome = OUT_BOMB_FAIL;
+        } else {
+                outcome = OUT_BOMB_SUCCESS;
+        }
         break;
 
     default:
