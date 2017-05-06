@@ -1,5 +1,5 @@
 #include "../headers/screens.h"
-#include "../../mechanics/headers/gamestate.h"
+#include "../../host/headers/gamestate.h"
 
 
 void init_ncurses_graphics() {
@@ -39,6 +39,7 @@ void quit_ncurses_graphics() {
 
 
 int main() {
+    // todo : use App class (OOP vs functional programming)
     init_ncurses_graphics();
     main_loop();
     quit_ncurses_graphics();

@@ -1,5 +1,5 @@
-#ifndef SRC_GRAPHICS_HEADERS_SCREENS_H_
-#define SRC_GRAPHICS_HEADERS_SCREENS_H_
+#ifndef SRC_CLIENT_HEADERS_SCREENS_H_
+#define SRC_CLIENT_HEADERS_SCREENS_H_
 
 #include <ncurses.h>
 
@@ -16,8 +16,9 @@ enum SCREEN_ID {
 #include "1_screen_host_lobby.h"
 #include "2_screen_game.h"
 
+// todo : change argument from gamestate to host sockfd
 SCREEN_ID (* const screens[SCR_NUMBER])(Gamestate **) = {
     main_menu, host_lobby, game
 };
 
-#endif  // SRC_GRAPHICS_HEADERS_SCREENS_H_
+#endif  // SRC_CLIENT_HEADERS_SCREENS_H_

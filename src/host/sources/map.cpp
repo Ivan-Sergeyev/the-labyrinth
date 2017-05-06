@@ -3,10 +3,10 @@
 #include <memory.h>
 #include <string>
 
-#include "../headers/game_map.h"
+#include "../headers/map.h"
 
 
-void GameMap::_allocate(int new_x_size, int new_y_size) {
+void Map::_allocate(int new_x_size, int new_y_size) {
     _deallocate();
     _x_size = new_x_size;
     _y_size = new_y_size;
@@ -20,7 +20,7 @@ void GameMap::_allocate(int new_x_size, int new_y_size) {
     }
 }
 
-void GameMap::_deallocate() {
+void Map::_deallocate() {
     if (_tiles) {
         for (int x = 0; x < _x_size; ++x) {
             delete[] _tiles[x];
@@ -30,11 +30,11 @@ void GameMap::_deallocate() {
     }
 }
 
-void GameMap::_clear_num_tiles() {
+void Map::_clear_num_tiles() {
     memset(_num_tiles, 0, MTT_NUMBER);
 }
 
-int GameMap::_load_tiles(std::ifstream &fin) {
+int Map::_load_tiles(std::ifstream &fin) {
     std::string line;
     MAP_TILE_TYPE type;
     MapWall wall_here, wall_there;
@@ -129,7 +129,7 @@ int GameMap::_load_tiles(std::ifstream &fin) {
     return 0;
 }
 
-int GameMap::_load_exits(std::ifstream &fin) {
+int Map::_load_exits(std::ifstream &fin) {
     int num_exits;
     int x, y;
     char d;
@@ -151,7 +151,7 @@ int GameMap::_load_exits(std::ifstream &fin) {
     return 0;
 }
 
-int GameMap::_load_holes(std::ifstream &fin) {
+int Map::_load_holes(std::ifstream &fin) {
     int num_holes, num_cycles, len_cycle;
     int x, y;
     MapTile *first_tile;
@@ -191,7 +191,7 @@ int GameMap::_load_holes(std::ifstream &fin) {
     return 0;
 }
 
-void GameMap::_add_outer_walls() {
+void Map::_add_outer_walls() {
     for (int x = 0; x < _x_size; ++x) {
         _tiles[x][0].add_wall(MapWall(DIR_UP, WT_MONOLYTH));
         _tiles[x][_y_size - 1].add_wall(MapWall(DIR_DOWN, WT_MONOLYTH));
@@ -204,7 +204,7 @@ void GameMap::_add_outer_walls() {
 }
 
 
-void GameMap::_save_tiles(std::ofstream &fout) const {
+void Map::_save_tiles(std::ofstream &fout) const {
     MapTile *tile, *next_tile;
     int offset;
 
@@ -242,29 +242,29 @@ void GameMap::_save_tiles(std::ofstream &fout) const {
     fout << '\n';
 }
 
-void GameMap::_save_exits(std::ofstream &fout) const {
+void Map::_save_exits(std::ofstream &fout) const {
     // todo : implement
 }
 
-void GameMap::_save_holes(std::ofstream &fout) const {
+void Map::_save_holes(std::ofstream &fout) const {
     // todo : implement
 }
 
-GameMap::GameMap() :
+Map::Map() :
     _x_size(0), _y_size(0), _tiles(nullptr) {
     _clear_num_tiles();
 }
 
-GameMap::~GameMap() {
+Map::~Map() {
     _deallocate();
 }
 
-void GameMap::init(int x_size, int y_size) {
+void Map::init(int x_size, int y_size) {
     _allocate(x_size, y_size);
     _clear_num_tiles();
 }
 
-void GameMap::clear() {
+void Map::clear() {
     if (_tiles) {
         for (int x = 0; x < _x_size; ++x) {
             for (int y = 0; y < _y_size; ++y) {
@@ -275,11 +275,11 @@ void GameMap::clear() {
     _clear_num_tiles();
 }
 
-bool GameMap::is_initialized() const {
+bool Map::is_initialized() const {
     return _x_size != 0 && _y_size != 0 && _tiles != nullptr;
 }
 
-bool GameMap::generate() {
+bool Map::generate() {
     // return true;  // success
     // return false;  // failure
 
@@ -291,7 +291,7 @@ bool GameMap::generate() {
     return load_result == 0;
 }
 
-int GameMap::load(const char *filename) {
+int Map::load(const char *filename) {
     // returns
     // 0 = ok
     // 1 = file missing
@@ -343,7 +343,7 @@ int GameMap::load(const char *filename) {
     return 0;
 }
 
-int GameMap::save(const char *filename) const {
+int Map::save(const char *filename) const {
     // todo : implement
     if (!is_initialized()) {
         return 2;
@@ -364,11 +364,11 @@ int GameMap::save(const char *filename) const {
     return 0;  // failed
 }
 
-bool GameMap::can_move(int from_x, int from_y, DIRECTION dir) const {
+bool Map::can_move(int from_x, int from_y, DIRECTION dir) const {
     return !(_tiles[from_x][from_y].has_wall(dir));
 }
 
 
-MapWall& GameMap::get_wall(int x, int y, DIRECTION dir) {
+MapWall& Map::get_wall(int x, int y, DIRECTION dir) {
     return _tiles[x][y].get_wall(dir);
 }

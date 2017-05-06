@@ -1,9 +1,9 @@
-#ifndef SRC_GRAPHICS_HEADERS_0_SCREEN_MAIN_MENU_H_
-#define SRC_GRAPHICS_HEADERS_0_SCREEN_MAIN_MENU_H_
+#ifndef SRC_CLIENT_HEADERS_0_SCREEN_MAIN_MENU_H_
+#define SRC_CLIENT_HEADERS_0_SCREEN_MAIN_MENU_H_
 
 #include "screens.h"
 
-#include "../../mechanics/headers/gamestate.h"
+#include "../../host/headers/gamestate.h"
 
 
 enum MAIN_MENU_BUTTONS {
@@ -34,6 +34,8 @@ void draw_menu(int highlight) {
 
 
 SCREEN_ID main_menu(Gamestate **gamestate) {
+    // todo : change argument from gamestate to host sockfd
+
     noecho();
 
     int key = 0;
@@ -73,4 +75,4 @@ SCREEN_ID main_menu(Gamestate **gamestate) {
     }
 }
 
-#endif  // SRC_GRAPHICS_HEADERS_0_SCREEN_MAIN_MENU_H_
+#endif  // SRC_CLIENT_HEADERS_0_SCREEN_MAIN_MENU_H_

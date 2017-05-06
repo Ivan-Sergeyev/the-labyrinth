@@ -1,21 +1,23 @@
 all: build
 	bin/main
 
-graph_obj := obj/main.o
-mech_obj  := obj/directions.o obj/map_wall.o obj/map_tile.o obj/game_map.o\
-			 obj/player_piece.o obj/treasure.o obj/gamestate.o
+client_obj := obj/main.o
+host_obj  := obj/directions.o obj/map_tile.o obj/map_wall.o obj/map.o \
+			 obj/player.o obj/treasure.o obj/gamestate.o \
+			 obj/host.o
 
-$(mech_obj): obj/%.o: src/mechanics/sources/%.cpp src/mechanics/headers/%.h
+$(host_obj): obj/%.o: src/host/sources/%.cpp src/host/headers/%.h
 	g++ -std=c++11 -Wall $< -c -o $@
 
-$(graph_obj): obj/%.o: src/graphics/sources/%.cpp src/graphics/headers/*.h
+$(client_obj): obj/%.o: src/client/sources/%.cpp src/client/headers/*.h
 	g++ -std=c++11 -Wall $< -c -o $@
 
-build: $(mech_obj) $(graph_obj)
-	g++ -std=c++11 $(mech_obj) $(graph_obj) -o bin/main -lncurses
+build: $(host_obj) $(client_obj)
+	g++ -std=c++11 $(host_obj) $(client_obj) -o bin/main -lncurses
 
 style_check:
-	python cpplint.py --filter=-legal/copyright,-build/include src/*/sources/*.cpp src/*/headers/*.h
+	python cpplint.py --filter=-legal/copyright,-build/include \
+		src/*/sources/*.cpp src/*/headers/*.h
 
 clean:
 	-rm obj/* bin/*

@@ -1,5 +1,5 @@
-#ifndef SRC_MECHANICS_HEADERS_PLAYER_PIECE_H_
-#define SRC_MECHANICS_HEADERS_PLAYER_PIECE_H_
+#ifndef SRC_HOST_HEADERS_PLAYER_H_
+#define SRC_HOST_HEADERS_PLAYER_H_
 
 #include "directions.h"
 
@@ -45,7 +45,7 @@ class player_move_t {
 };
 
 
-class PlayerPiece {
+class Player {
  private:
     int _x_pos, _y_pos;
     int _health;
@@ -55,7 +55,7 @@ class PlayerPiece {
     int _health_in_range(int health) const;
 
  public:
-    PlayerPiece();
+    Player();
 
     int get_x_pos() const;
     int get_y_pos() const;
@@ -79,4 +79,4 @@ class PlayerPiece {
     int remove_knives(int amount);
 };
 
-#endif  // SRC_MECHANICS_HEADERS_PLAYER_PIECE_H_
+#endif  // SRC_HOST_HEADERS_PLAYER_H_

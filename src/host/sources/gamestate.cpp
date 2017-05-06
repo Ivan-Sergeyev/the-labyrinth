@@ -2,7 +2,7 @@
 
 
 bool Gamestate::_check_initialization() {
-    if (!_game_map.is_initialized() || (_num_players == 0)) {
+    if (!_map.is_initialized() || (_num_players == 0)) {
         return false;
     }
     return true;
@@ -32,49 +32,51 @@ void Gamestate::_start_next_turn(OUTCOME outcome) {
 bool Gamestate::_wound_other_players(int x, int y, int player_id) {
     bool _had_other_players = false;
     for (int i = 0; i < _num_players; i++) {
-        PlayerPiece *piece = &(_player_pieces[i]);
-        if ((piece->get_x_pos() == x) &&
-            (piece->get_y_pos() == y) &&
+        Player *player = &(_players[i]);
+        if ((player->get_x_pos() == x) &&
+            (player->get_y_pos() == y) &&
             (i != player_id)) {
             _had_other_players = true;
-            piece->take_damage(1);
+            player->take_damage(1);
         }
     }
     return _had_other_players;
 }
 
-Gamestate::Gamestate() :
-    _num_players(1), _player_turn(0),
-    _num_treasures(0), _treasure(nullptr)
-    {}
+Gamestate::Gamestate(int num_players) :
+        _num_players(num_players), _player_turn(0),
+        _num_treasures(0), _treasure(nullptr) {
+    _players = new Player[num_players];
+}
 
 Gamestate::~Gamestate() {
-    _game_map.~GameMap();
+    _map.~Map();
     delete[] _treasure;
+    delete[] _players;
 }
 
 bool Gamestate::generate_map(int x_size, int y_size) {
-    _game_map.init(x_size, y_size);
+    _map.init(x_size, y_size);
     // todo : pass parameters
-    return _game_map.generate();
+    return _map.generate();
 }
 
 int Gamestate::load_map(const char *filename) {
-    return _game_map.load(filename);
+    return _map.load(filename);
 }
 
 int Gamestate::save_map(const char *filename) const {
-    return _game_map.save(filename);
+    return _map.save(filename);
 }
 
 OUTCOME Gamestate::_try_shoot(int player_id, DIRECTION dir) {
-    if (_player_pieces[player_id].get_bullets() == 0) {
+    if (_players[player_id].get_bullets() == 0) {
         return OUT_INVALID;
     }
-    int x = _player_pieces[player_id].get_x_pos();
-    int y = _player_pieces[player_id].get_y_pos();
+    int x = _players[player_id].get_x_pos();
+    int y = _players[player_id].get_y_pos();
 
-    while (!_game_map.can_move(x, y, dir)) {
+    while (!_map.can_move(x, y, dir)) {
         x += DIRECTION_DX[dir];
         y += DIRECTION_DY[dir];
 
@@ -96,13 +98,13 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
     }
 
     OUTCOME outcome = OUT_INVALID;
-    PlayerPiece &player = _player_pieces[player_id];
+    Player &player = _players[player_id];
     int player_x = player.get_x_pos();
     int player_y = player.get_y_pos();
     DIRECTION player_d = p_move.direction;
 
     // needed for bomb action
-    MapWall _map_wall = _game_map.get_wall(player_x, player_y, player_d);
+    MapWall _map_wall = _map.get_wall(player_x, player_y, player_d);
 
     switch (p_move.action) {
     case ACT_NONE:
@@ -116,7 +118,7 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
             break;
         }
         // attempt to move player
-        if (_game_map.can_move(player_x, player_y, player_d)) {
+        if (_map.can_move(player_x, player_y, player_d)) {
             player_x += DIRECTION_DX[player_d];
             player_y += DIRECTION_DY[player_d];
             player.set_pos(player_x, player_y);

@@ -1,7 +1,5 @@
-#ifndef SRC_GRAPHICS_HEADERS_MESSAGE_WINDOWS_H_
-#define SRC_GRAPHICS_HEADERS_MESSAGE_WINDOWS_H_
-
-#include "string.h"
+#ifndef SRC_CLIENT_HEADERS_MESSAGE_WINDOWS_H_
+#define SRC_CLIENT_HEADERS_MESSAGE_WINDOWS_H_
 
 #include "box_window.h"
 
@@ -18,8 +16,8 @@ class MessageHistoryBox : public BoxWindow {
             BoxWindow(h, w, y, x),
             _history_length(hstr_len),
             _message_max_length(msg_len),
-            _oldest_idx(0),
-            _history (new char*[_history_length]) {
+            _oldest_idx(0) {
+        _history = new char*[_history_length];
         for (int i = 0; i < _history_length; ++i) {
             _history[i] = new char[_message_max_length];
             memset(_history[i], 0, _message_max_length);
@@ -87,4 +85,4 @@ class MessageInputBox : public BoxWindow {
     }
 };
 
-#endif  // SRC_GRAPHICS_HEADERS_MESSAGE_WINDOWS_H_
+#endif  // SRC_CLIENT_HEADERS_MESSAGE_WINDOWS_H_

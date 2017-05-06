@@ -1,8 +1,8 @@
-#ifndef SRC_MECHANICS_HEADERS_GAMESTATE_H_
-#define SRC_MECHANICS_HEADERS_GAMESTATE_H_
+#ifndef SRC_HOST_HEADERS_GAMESTATE_H_
+#define SRC_HOST_HEADERS_GAMESTATE_H_
 
-#include "game_map.h"
-#include "player_piece.h"
+#include "map.h"
+#include "player.h"
 #include "treasure.h"
 
 
@@ -32,25 +32,25 @@ const char OUTCOME_STRING[OUT_NUMBER][30] = {
 
 class Gamestate {
  private:
-    GameMap _game_map;
+    Map _map;
 
     int _num_players;
-    PlayerPiece _player_pieces[1];
-    int _player_turn;
+    Player *_players;
+    int _player_turn;  // transfer to class Host
 
     int _num_treasures;
     Treasure *_treasure;
 
-    // todo : interfaces for talking to local and remote players
-
     bool _check_initialization();
 
+    // transfer to class Host {
     void _start_next_turn(OUTCOME outcome);
     bool _wound_other_players(int x, int y, int player_id);
     OUTCOME _try_shoot(int player_id, DIRECTION dir);
+    // }
 
  public:
-    Gamestate();
+    Gamestate(int num_players);
 
     ~Gamestate();
 
@@ -61,4 +61,4 @@ class Gamestate {
     OUTCOME request_move(int player_id, player_move_t p_move);
 };
 
-#endif  // SRC_MECHANICS_HEADERS_GAMESTATE_H_
+#endif  // SRC_HOST_HEADERS_GAMESTATE_H_

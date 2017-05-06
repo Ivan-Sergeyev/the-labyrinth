@@ -1,5 +1,5 @@
-#ifndef SRC_MECHANICS_HEADERS_MAP_WALL_H_
-#define SRC_MECHANICS_HEADERS_MAP_WALL_H_
+#ifndef SRC_HOST_HEADERS_MAP_WALL_H_
+#define SRC_HOST_HEADERS_MAP_WALL_H_
 
 #include "directions.h"
 
@@ -36,4 +36,4 @@ class MapWall {
     bool destroy();
 };
 
-#endif  // SRC_MECHANICS_HEADERS_MAP_WALL_H_
+#endif  // SRC_HOST_HEADERS_MAP_WALL_H_

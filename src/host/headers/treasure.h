@@ -1,5 +1,5 @@
-#ifndef SRC_MECHANICS_HEADERS_TREASURE_H_
-#define SRC_MECHANICS_HEADERS_TREASURE_H_
+#ifndef SRC_HOST_HEADERS_TREASURE_H_
+#define SRC_HOST_HEADERS_TREASURE_H_
 
 class Treasure {
  private:
@@ -14,4 +14,4 @@ class Treasure {
     void set_pos(int x, int y);
 };
 
-#endif  // SRC_MECHANICS_HEADERS_TREASURE_H_
+#endif  // SRC_HOST_HEADERS_TREASURE_H_

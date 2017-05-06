@@ -1,5 +1,5 @@
-#ifndef SRC_MECHANICS_HEADERS_MAP_TILE_H_
-#define SRC_MECHANICS_HEADERS_MAP_TILE_H_
+#ifndef SRC_HOST_HEADERS_MAP_TILE_H_
+#define SRC_HOST_HEADERS_MAP_TILE_H_
 
 #include "map_wall.h"
 
@@ -43,4 +43,4 @@ class MapTile {
     MapWall& get_wall(DIRECTION dir);
 };
 
-#endif  // SRC_MECHANICS_HEADERS_MAP_TILE_H_
+#endif  // SRC_HOST_HEADERS_MAP_TILE_H_

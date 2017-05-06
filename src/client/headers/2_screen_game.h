@@ -1,5 +1,5 @@
-#ifndef SRC_GRAPHICS_HEADERS_2_SCREEN_GAME_H_
-#define SRC_GRAPHICS_HEADERS_2_SCREEN_GAME_H_
+#ifndef SRC_CLIENT_HEADERS_2_SCREEN_GAME_H_
+#define SRC_CLIENT_HEADERS_2_SCREEN_GAME_H_
 
 #include <cstring>
 #include <stdio.h>
@@ -8,7 +8,7 @@
 #include "screens.h"
 #include "message_windows.h"
 
-#include "../../mechanics/headers/gamestate.h"
+#include "../../host/headers/gamestate.h"
 
 
 const char PLAYER_ACTION_STRING[ACT_NUMBER][6] = {
@@ -46,6 +46,8 @@ player_move_t parse_input(char *str, int len) {
 
 
 SCREEN_ID game(Gamestate **gamestate) {
+    // todo : change argument from gamestate to host sockfd
+
     echo();
 
     int scr_h, scr_w;
@@ -103,4 +105,4 @@ SCREEN_ID game(Gamestate **gamestate) {
     }
 }
 
-#endif  // SRC_GRAPHICS_HEADERS_2_SCREEN_GAME_H_
+#endif  // SRC_CLIENT_HEADERS_2_SCREEN_GAME_H_
