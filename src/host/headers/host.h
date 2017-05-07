@@ -1,5 +1,5 @@
-#ifndef SRC_HOST_HOST_H_
-#define SRC_HOST_HOST_H_
+#ifndef SRC_HOST_HEADERS_HOST_H_
+#define SRC_HOST_HEADERS_HOST_H_
 
 #include <vector>
 #include <sys/types.h>
@@ -36,4 +36,4 @@ class Host {
     // todo : game cycle
 };
 
-#endif  // SRC_HOST_HOST_H_
+#endif  // SRC_HOST_HEADERS_HOST_H_

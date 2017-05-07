@@ -3,30 +3,41 @@
 
 #include <iostream>
 
-#include "../../host/headers/gamestate.h"
+#include "general_screen.h"
+#include "2_screen_game.h"
 
 
-SCREEN_ID host_lobby(Gamestate **gamestate) {
-    // todo : change argument from gamestate to host sockfd
+class ScreenHostLobby : public GeneralScreen {
+ public:
+    ScreenHostLobby() {}
+    ~ScreenHostLobby() {}
 
-    // todo : fork
-    // parent is client, child is host
-    // create socket, commence communication
+    GeneralScreen* loop(Gamestate **gamestate) {
+        // todo : change argument from gamestate to host sockfd
 
-    // note : transfer gamestate creation to class Host
-    delete *gamestate;
-    *gamestate = new Gamestate(1);
+        // todo : fork
+        // parent is client, child is host
+        // create socket, commence communication
 
-    int ret = (*gamestate)->generate_map(5, 5);
-    if (!ret) {
-        // std::cerr << "failed to generate map\n";
-        return SCR_EXIT;
-    } else {
-        // std::cerr << "map generation successful\n";
+        // note : transfer gamestate to class Host
+        std::cerr << "ok start lobby\n";
+        *gamestate = new Gamestate(1);
+        std::cerr << "ok new gamestate\n";
+        int ret = (*gamestate)->generate_map(5, 5);
+        std::cerr << "ok generate map\n";
+
+        if (!ret) {
+            // std::cerr << "failed to generate map\n";
+            return nullptr;
+        } else {
+            // std::cerr << "map generation successful\n";
+        }
+
+        std::cerr << "ok\n";
+        GeneralScreen *next_screen = new ScreenGame();
+        std::cerr << "ok\n";
+        return next_screen;
     }
-
-    //
-    return SCR_GAME;
-}
+};
 
 #endif  // SRC_CLIENT_HEADERS_1_SCREEN_HOST_LOBBY_H_

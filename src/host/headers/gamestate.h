@@ -50,7 +50,7 @@ class Gamestate {
     // }
 
  public:
-    Gamestate(int num_players);
+    explicit Gamestate(int num_players);
 
     ~Gamestate();
 

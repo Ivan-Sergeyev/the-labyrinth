@@ -1,7 +1,7 @@
 all: build
 	bin/main
 
-client_obj := obj/main.o
+client_obj := obj/app.o obj/main.o
 host_obj  := obj/directions.o obj/map_tile.o obj/map_wall.o obj/map.o \
 			 obj/player.o obj/treasure.o obj/gamestate.o \
 			 obj/host.o
@@ -20,4 +20,4 @@ style_check:
 		src/*/sources/*.cpp src/*/headers/*.h
 
 clean:
-	-rm obj/* bin/*
+	-rm obj/* bin/* log.txt
