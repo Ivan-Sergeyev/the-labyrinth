@@ -1,7 +1,9 @@
 #ifndef SRC_CLIENT_HEADERS_MESSAGE_WINDOWS_H_
 #define SRC_CLIENT_HEADERS_MESSAGE_WINDOWS_H_
 
-#include "box_window.h"
+#include <string.h>
+
+#include "ui_box_window.h"
 
 
 class MessageHistoryBox : public BoxWindow {
@@ -79,9 +81,11 @@ class MessageInputBox : public BoxWindow {
         mvwprintw(_window, 1, 1, "> ");
     }
 
-    char* input() {
+    char *input() {
         wgetnstr(_window, _input_string, _message_max_length - 1);
-        return _input_string;
+        char *input = new char [_message_max_length];
+        strncpy(input, _input_string, _message_max_length);
+        return input;
     }
 };
 

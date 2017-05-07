@@ -1,10 +1,10 @@
 all: build
-	bin/main
+	bin/main 2>log.txt
 
-client_obj := obj/app.o obj/main.o
 host_obj  := obj/directions.o obj/map_tile.o obj/map_wall.o obj/map.o \
 			 obj/player.o obj/treasure.o obj/gamestate.o \
-			 obj/host.o
+			 obj/socket_common.o obj/host.o
+client_obj := obj/app.o obj/main.o
 
 $(host_obj): obj/%.o: src/host/sources/%.cpp src/host/headers/%.h
 	g++ -std=c++11 -Wall $< -c -o $@

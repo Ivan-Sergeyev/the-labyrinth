@@ -1,51 +1,12 @@
+#include <iostream>
+
 #include "../headers/gamestate.h"
 
 
-bool Gamestate::_check_initialization() {
-    if (!_map.is_initialized() || (_num_players == 0)) {
-        return false;
-    }
-    return true;
-}
-
-void Gamestate::_start_next_turn(OUTCOME outcome) {
-    switch (outcome) {
-    case OUT_SKIP:
-    case OUT_PASS:
-    case OUT_WALL:
-    case OUT_MISS:
-    case OUT_WOUND:
-    case OUT_KILL:
-    case OUT_BOMB_SUCCESS:
-    case OUT_BOMB_FAIL:
-        _player_turn = (_player_turn + 1) % _num_players;
-        // todo : change positions of treasures
-        break;
-    case OUT_INVALID:
-    case OUT_IGNORED:
-    case OUT_NO_TURN:
-    default:
-        break;
-    }
-}
-
-bool Gamestate::_wound_other_players(int x, int y, int player_id) {
-    bool _had_other_players = false;
-    for (int i = 0; i < _num_players; i++) {
-        Player *player = &(_players[i]);
-        if ((player->get_x_pos() == x) &&
-            (player->get_y_pos() == y) &&
-            (i != player_id)) {
-            _had_other_players = true;
-            player->take_damage(1);
-        }
-    }
-    return _had_other_players;
-}
-
 Gamestate::Gamestate(int num_players) :
-        _num_players(num_players), _player_turn(0),
-        _num_treasures(0), _treasure(nullptr) {
+        _num_players(num_players),
+        _num_treasures(0),
+        _treasure(nullptr) {
     _players = new Player[num_players];
 }
 
@@ -53,6 +14,13 @@ Gamestate::~Gamestate() {
     _map.~Map();
     delete[] _treasure;
     delete[] _players;
+}
+
+bool Gamestate::is_initialized() {
+    if (!_map.is_initialized() || (_num_players == 0)) {
+        return false;
+    }
+    return true;
 }
 
 bool Gamestate::generate_map(int x_size, int y_size) {
@@ -68,6 +36,20 @@ int Gamestate::load_map(const char *filename) {
 int Gamestate::save_map(const char *filename) const {
     return _map.save(filename);
 }
+
+bool Gamestate::_wound_other_players(int x, int y, int player_id) {
+    bool _had_other_players = false;
+    for (int i = 0; i < _num_players; i++) {
+        Player *player = &(_players[i]);
+        if ((player->get_x_pos() == x) && (player->get_y_pos() == y) &&
+            (i != player_id)) {
+                _had_other_players = true;
+                player->take_damage(1);
+        }
+    }
+    return _had_other_players;
+}
+
 
 OUTCOME Gamestate::_try_shoot(int player_id, DIRECTION dir) {
     if (_players[player_id].get_bullets() == 0) {
@@ -88,13 +70,10 @@ OUTCOME Gamestate::_try_shoot(int player_id, DIRECTION dir) {
     return OUT_MISS;
 }
 
-OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
-    if (!_check_initialization()) {
+OUTCOME Gamestate::_request_move(int player_id, player_move_t p_move) {
+    if (!is_initialized()) {
+        std::cerr << "gamestate : cannot requst move - no init\n";
         return OUT_INVALID;
-    }
-
-    if (player_id != _player_turn) {
-        return OUT_IGNORED;
     }
 
     OUTCOME outcome = OUT_INVALID;
@@ -163,8 +142,6 @@ OUTCOME Gamestate::request_move(int player_id, player_move_t p_move) {
     default:
         break;
     }
-
-    _start_next_turn(outcome);
 
     return outcome;
 }

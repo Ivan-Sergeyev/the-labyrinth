@@ -280,15 +280,15 @@ bool Map::is_initialized() const {
 }
 
 bool Map::generate() {
-    // return true;  // success
-    // return false;  // failure
+    // return 0      = success
+    // return non-0  = failure
 
-    // todo : implement real generation
-    // todo : add other parameters -- number of special tiles of each type,
+    // todo : implement generation
+    // todo : add parameters -- number of special tiles of each type,
     //        number of treasures, etc.
 
     int load_result = load("test/test.maze");
-    return load_result == 0;
+    return load_result != 0;
 }
 
 int Map::load(const char *filename) {

@@ -3,7 +3,7 @@
 
 
 int main() {
-    GeneralScreen *main_menu = new ScreenMainMenu();
+    ScreenMainMenu *main_menu = new ScreenMainMenu();
     return App(main_menu).run();
     delete main_menu;
 }

@@ -1,54 +1,60 @@
 #ifndef SRC_CLIENT_HEADERS_2_SCREEN_GAME_H_
 #define SRC_CLIENT_HEADERS_2_SCREEN_GAME_H_
 
-#include <cstring>
+#include <arpa/inet.h>
+#include <errno.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-#include "message_windows.h"
+#include <cstring>
+
+#include "general_screen.h"
+#include "ui_message_windows.h"
+#include "../../host/headers/host.h"
+
+#define MAXDATASIZE 100  // max number of bytes we can get at once
 
 
 class ScreenGame : public GeneralScreen {
  private:
-    const char PLAYER_ACTION_STRING[ACT_NUMBER][6] = {
-        "skip", "move", "knife", "shoot", "bomb"
-    };
+    int _host_socket_fd;
+    int _player_id;
 
+    char *_get_outcome(char *msg, int len) {
+        std::cerr << "client : send message \"" << msg << "\" to host\n";
+        int numbytes = send(_host_socket_fd, msg, len, 0);
 
-    player_move_t parse_input(char *str, int len) {
-        PLAYER_ACTION action = ACT_NONE;
-        DIRECTION direction = DIR_NONE;
-
-        char *word1 = new char[len];
-        char *word2 = new char[len];
-        sscanf(str, "%s %s", word1, word2);
-
-        for (int i = 0; i < ACT_NUMBER; ++i) {
-            if (!strcmp(PLAYER_ACTION_STRING[i], word1)) {
-                action = (PLAYER_ACTION) i;
-                break;
-            }
+        char *buf = new char [MAXDATASIZE];
+        numbytes = recv(_host_socket_fd, buf, MAXDATASIZE - 1, 0);
+        if (numbytes == -1) {
+            perror("recv");
+            strcpy(buf, OUTCOME_STRING[OUT_INVALID]);
+            numbytes = strlen(OUTCOME_STRING[OUT_INVALID]);
         }
+        buf[numbytes] = '\0';
 
-        for (int i = 0; i < DIR_NUMBER; ++i) {
-            if (!strcmp(DIRECTION_STRING[i], word2)) {
-                direction = (DIRECTION) i;
-                break;
-            }
-        }
-
-        delete[] word1;
-        delete[] word2;
-
-        return player_move_t(action, direction);
+        return buf;
     }
 
  public:
     ScreenGame() {}
     ~ScreenGame() {}
 
-    GeneralScreen* loop(Gamestate **gamestate) {
-        // todo : change argument from gamestate to host sockfd
+    void set_host_socket(int socket_fd) {
+        _host_socket_fd = socket_fd;
+    }
 
+    void set_player_id(int player_id) {
+        _player_id = player_id;
+    }
+
+    GeneralScreen* loop() {
         echo();
 
         int scr_h, scr_w;
@@ -79,11 +85,8 @@ class ScreenGame : public GeneralScreen {
         MessageHistoryBox _msg_hstr(mh_h, mh_w, mh_y, mh_x,
                                     _MAX_HISTORY_LEN, _MAX_MSG_LEN);
 
-        // player_id = gamestate.get_player_id
-        // todo : add interface for talking to gamestate
-        int player_id = 0;
         player_move_t p_move;
-        OUTCOME outcome;
+        char *msg, *buf;
 
         while (1) {
             refresh();
@@ -91,18 +94,22 @@ class ScreenGame : public GeneralScreen {
             _msg_hstr.refresh();
             _msg_in.refresh();
 
-            char* msg = _msg_in.input();
+            msg = _msg_in.input();
+
             _msg_hstr.add_msg(msg);
             _msg_hstr.refresh();
 
-            p_move = parse_input(msg, _MAX_MSG_LEN);
-            outcome = (*gamestate)->request_move(player_id, p_move);
-            _msg_hstr.add_msg(OUTCOME_STRING[outcome]);
+            buf = _get_outcome(msg, _MAX_MSG_LEN);
+            _msg_hstr.add_msg(buf);
             _msg_hstr.refresh();
 
+            delete buf;
             if (!strncmp(msg, "exit", _MAX_MSG_LEN)) {
+                delete msg;
+                clear();
                 return nullptr;
             }
+            delete msg;
         }
     }
 };

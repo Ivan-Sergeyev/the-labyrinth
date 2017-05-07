@@ -36,7 +36,7 @@ class ScreenMainMenu : public GeneralScreen {
     ScreenMainMenu() {}
     ~ScreenMainMenu() {}
 
-    GeneralScreen* loop(Gamestate **gamestate) {
+    GeneralScreen* loop() {
         // todo : change argument from gamestate to host sockfd
         GeneralScreen *next_screen;
 
