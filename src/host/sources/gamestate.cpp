@@ -37,7 +37,7 @@ int Gamestate::save_map(const char *filename) const {
     return _map.save(filename);
 }
 
-bool Gamestate::_wound_other_players(int x, int y, int player_id) {
+OUTCOME Gamestate::_wound_other_players(int x, int y, int player_id) {
     bool _had_other_players = false;
     for (int i = 0; i < _num_players; i++) {
         Player *player = &(_players[i]);
@@ -47,9 +47,13 @@ bool Gamestate::_wound_other_players(int x, int y, int player_id) {
                 player->take_damage(1);
         }
     }
-    return _had_other_players;
-}
 
+    if (_had_other_players) {
+        return OUT_WOUND;
+    }
+    return OUT_MISS;
+    // return OUT_KILL;
+}
 
 OUTCOME Gamestate::_try_shoot(int player_id, DIRECTION dir) {
     if (_players[player_id].get_bullets() == 0) {
@@ -58,11 +62,12 @@ OUTCOME Gamestate::_try_shoot(int player_id, DIRECTION dir) {
     int x = _players[player_id].get_x_pos();
     int y = _players[player_id].get_y_pos();
 
+    OUTCOME out;
     while (!_map.can_move(x, y, dir)) {
         x += DIRECTION_DX[dir];
         y += DIRECTION_DY[dir];
-
-        if (_wound_other_players(x, y, player_id)) {
+        out = _wound_other_players(x, y, player_id);
+        if (out == OUT_WOUND) {
             return OUT_WOUND;
         }
     }
@@ -101,6 +106,7 @@ OUTCOME Gamestate::_request_move(int player_id, player_move_t p_move) {
             player_x += DIRECTION_DX[player_d];
             player_y += DIRECTION_DY[player_d];
             player.set_pos(player_x, player_y);
+            // todo : move through holes and rivers
             // todo : move player's treasure with them
             outcome = OUT_PASS;
         } else {
@@ -109,23 +115,15 @@ OUTCOME Gamestate::_request_move(int player_id, player_move_t p_move) {
         break;
     case ACT_KNIFE:
         // attempt to use a knife
-        if (!_wound_other_players(player_x, player_y, player_id)) {
-            outcome = OUT_MISS;
-            break;
-        } else {
-            outcome = OUT_WOUND;
-            break;
-        }
-        // outcome = OUT_KILL;
-        // break;
+        outcome = _wound_other_players(player_x, player_y, player_id);
+        break;
     case ACT_SHOOT:
         if (!is_direction(player_d)) {
             break;
         }
 
         outcome = _try_shoot(player_id, player_d);
-    break;
-
+        break;
     case ACT_BOMB:
         if (!is_direction(player_d)) {
             break;
@@ -135,10 +133,10 @@ OUTCOME Gamestate::_request_move(int player_id, player_move_t p_move) {
             (_map_wall.get_type() != WT_DESTRUCTIBLE)) {
                 outcome = OUT_BOMB_FAIL;
         } else {
-                outcome = OUT_BOMB_SUCCESS;
+            // todo : detroy the wall
+            outcome = OUT_BOMB_SUCCESS;
         }
         break;
-
     default:
         break;
     }

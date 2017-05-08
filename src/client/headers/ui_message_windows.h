@@ -1,5 +1,5 @@
-#ifndef SRC_CLIENT_HEADERS_MESSAGE_WINDOWS_H_
-#define SRC_CLIENT_HEADERS_MESSAGE_WINDOWS_H_
+#ifndef SRC_CLIENT_HEADERS_UI_MESSAGE_WINDOWS_H_
+#define SRC_CLIENT_HEADERS_UI_MESSAGE_WINDOWS_H_
 
 #include <string.h>
 
@@ -72,7 +72,7 @@ class MessageInputBox : public BoxWindow {
     }
 
     string input() {
-        char *input_cstring = new char [_max_message_length];
+        char *input_cstring = new char[_max_message_length];
         wgetnstr(_window, input_cstring, _max_message_length - 1);
         string input_string(input_cstring);
         delete [] input_cstring;
@@ -80,4 +80,4 @@ class MessageInputBox : public BoxWindow {
     }
 };
 
-#endif  // SRC_CLIENT_HEADERS_MESSAGE_WINDOWS_H_
+#endif  // SRC_CLIENT_HEADERS_UI_MESSAGE_WINDOWS_H_

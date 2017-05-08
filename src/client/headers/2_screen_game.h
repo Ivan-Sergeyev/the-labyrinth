@@ -19,6 +19,8 @@
 #include "ui_message_windows.h"
 #include "../../host/headers/host.h"
 
+using std::cerr;
+
 #define MAXDATASIZE 100  // max number of bytes we can get at once
 
 
@@ -27,16 +29,20 @@ class ScreenGame : public GeneralScreen {
     int _host_socket_fd;
     int _player_id;
 
-    string _get_outcome(string msg) {
-        std::cerr << "client : send message \"" << msg << "\" to host\n";
-        int numbytes = send(_host_socket_fd, msg.c_str(), msg.length(), 0);
+    string _get_outcome(const string &msg) {
+        cerr << "client : send message \"" << msg << "\" to host\n";
+        int numbytes = send(_host_socket_fd, msg.c_str(), MAXDATASIZE - 1, 0);
+        if (numbytes == -1) {
+            perror("client : send");
+        }
 
-        char *buf = new char [MAXDATASIZE];
+        char *buf = new char[MAXDATASIZE];
         numbytes = recv(_host_socket_fd, buf, MAXDATASIZE - 1, 0);
         if (numbytes == -1) {
-            perror("recv");
-            strcpy(buf, OUTCOME_STRING[OUT_INVALID]);
-            numbytes = strlen(OUTCOME_STRING[OUT_INVALID]);
+            perror("client : recv");
+            const char *str_outcome = OUTCOME_STRING[OUT_INVALID];
+            numbytes = strlen(str_outcome);
+            strncpy(buf, str_outcome, numbytes);
         }
         buf[numbytes] = '\0';
 
@@ -97,7 +103,7 @@ class ScreenGame : public GeneralScreen {
             _msg_in.refresh();
 
             msg = _msg_in.input();
-            if (msg == "") {
+            if (msg.empty()) {
                 continue;
             }
 
@@ -109,6 +115,7 @@ class ScreenGame : public GeneralScreen {
             _msg_hstr.refresh();
 
             if (msg == "exit") {
+                cerr << "client : exit\n";
                 clear();
                 return nullptr;
             }

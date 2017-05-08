@@ -1,14 +1,35 @@
 #include <iostream>
+#include <sstream>
 
 #include "../headers/host.h"
 
+using std::cerr;
+using std::stringstream;
+
 #define MAXDATASIZE 100  // max number of bytes we can get at once
-#define BACKLOG 10   // how many pending connections queue will hold
+#define BACKLOG 10       // how many pending connections queue will hold
 
 
-void _close_sock_fd(int &fd) {
-    close(fd);
-    fd = -1;
+void _close_sock_fd(int *fd) {
+    close(*fd);
+    *fd = -1;
+}
+
+template<typename Out>
+void split(const string &s, char delim, Out result) {
+    stringstream ss;
+    ss.str(s);
+    string item;
+    while (getline(ss, item, delim)) {
+        *(result++) = item;
+    }
+}
+
+
+vector<string> split(const string &s, char delim) {
+    vector<string> elems;
+    split(s, delim, back_inserter(elems));
+    return elems;
 }
 
 void Host::_reserve_player_sockets() {
@@ -16,11 +37,11 @@ void Host::_reserve_player_sockets() {
 }
 
 void Host::_close_connections() {
-    _close_sock_fd(_listen_sock_fd);
+    _close_sock_fd(&_listen_sock_fd);
 
     for (int i = 0; i < _max_num_players; ++i) {
         if (_player_socket_fds[i] != -1) {
-            _close_sock_fd(_player_socket_fds[i]);
+            _close_sock_fd(&_player_socket_fds[i]);
         }
     }
 }
@@ -32,17 +53,17 @@ int Host::_start_listener() {
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE; // use my IP
+    hints.ai_flags = AI_PASSIVE;  // use my IP
 
-    ret = getaddrinfo(NULL, PORT, &hints, &servinfo);
+    ret = getaddrinfo(nullptr, PORT, &hints, &servinfo);
     if (ret != 0) {
-        std::cerr << "getaddrinfo: " << gai_strerror(ret) << '\n';
+        cerr << "host : getaddrinfo: " << gai_strerror(ret) << '\n';
         return 1;
     }
 
     // loop through all the results and bind to the first we can
     int yes = 1;
-    for (p = servinfo; p != NULL; p = p->ai_next) {
+    for (p = servinfo; p != nullptr; p = p->ai_next) {
         _listen_sock_fd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
         if (_listen_sock_fd == -1) {
             perror("host : socket");
@@ -52,7 +73,7 @@ int Host::_start_listener() {
         ret = setsockopt(_listen_sock_fd, SOL_SOCKET,
                          SO_REUSEADDR, &yes, sizeof(int));
         if (ret == -1) {
-            perror("setsockopt");
+            perror("host : setsockopt");
             return 1;
         }
 
@@ -65,15 +86,15 @@ int Host::_start_listener() {
 
         break;
     }
-    freeaddrinfo(servinfo); // all done with this structure
+    freeaddrinfo(servinfo);  // all done with this structure
 
-    if (p == NULL)  {
-        std::cerr << "host : failed to bind\n";
+    if (p == nullptr)  {
+        cerr << "host : failed to bind\n";
         return 1;
     }
 
     if (listen(_listen_sock_fd, BACKLOG) == -1) {
-        perror("listen");
+        perror("host : listen");
         return 1;
     }
 
@@ -82,11 +103,11 @@ int Host::_start_listener() {
 
 int Host::_connect_hosting_player() {
     struct sigaction sa;
-    sa.sa_handler = _sigchld_handler; // reap all dead processes
+    sa.sa_handler = _sigchld_handler;  // reap all dead processes
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
-    if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-        perror("sigaction");
+    if (sigaction(SIGCHLD, &sa, nullptr) == -1) {
+        perror("host : sigaction");
         return 1;
     }
 
@@ -100,14 +121,13 @@ int Host::_connect_hosting_player() {
         new_fd = accept(_listen_sock_fd, (struct sockaddr *)&their_addr,
                         &sin_size);
         if (new_fd == -1) {
-            perror("accept");
+            perror("host : accept");
             continue;
         }
 
         inet_ntop(their_addr.ss_family,
-            _get_in_addr((struct sockaddr *)&their_addr),
-            s, sizeof s);
-        std::cerr << "host : got connection from " << s << '\n';
+            _get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
+        cerr << "host : got connection from " << s << '\n';
         break;
     }
 
@@ -128,62 +148,68 @@ void Host::_delete_gamesate() {
 void Host::_game_loop() {
     int numbytes;
     char buf[MAXDATASIZE];
+    string msg;
+
     player_move_t move;
     OUTCOME out;
 
-    int player_id = 0;  // todo : multiplayer
-    while(1) {
+    while (1) {
+        int player_id = 0;  // todo : multiplayer
         int sock_fd = _player_socket_fds[player_id];
+
         numbytes = recv(sock_fd, buf, MAXDATASIZE - 1, 0);
         if (numbytes == -1) {
-            perror("recv");
+            perror("host : recv");
             continue;
         }
         buf[numbytes] = '\0';
-        std::cerr << "host : received message \"" << buf << "\" from client\n";
+        msg = string(buf);
+        vector<string> words = split(msg, ' ');
 
+        cerr << "host : received message \"" << msg << '\"'
+             << " from player " << player_id << "\n";
+
+        // todo : add chat messages
         if (player_id != _player_turn) {
             out = OUT_IGNORED;
         } else {
-            if (!strncmp(buf, "exit", numbytes)) {
+            if (words[0] == "exit") {
+                cerr << "host : exiting\n";
                 break;
             }
-            move = _parse_input(buf, numbytes);
+            move = _parse_input(words);
             out = _request_move(player_id, move);
         }
 
         numbytes = send(sock_fd, OUTCOME_STRING[out], OUTCOME_STR_MAX_LEN, 0);
         if (numbytes == -1) {
-            perror("send");
+            perror("host : send");
         }
         _start_next_turn(out);
     }
 }
 
-player_move_t Host::_parse_input(const char *str, int len) const {
+player_move_t Host::_parse_input(const vector<string> &words) const {
+    if (words.size() != 2) {
+        return player_move_t(ACT_NONE, DIR_NONE);
+    }
+
     PLAYER_ACTION action = ACT_NONE;
     DIRECTION direction = DIR_NONE;
 
-    char *word1 = new char[len];
-    char *word2 = new char[len];
-    sscanf(str, "%s %s", word1, word2);
-
     for (int i = 0; i < ACT_NUMBER; ++i) {
-        if (!strncmp(PLAYER_ACTION_STRING[i], word1, len)) {
+        if (words[0] == PLAYER_ACTION_STRING[i]) {
             action = (PLAYER_ACTION) i;
             break;
         }
     }
 
     for (int i = 0; i < DIR_NUMBER; ++i) {
-        if (!strncmp(DIRECTION_STRING[i], word2, len)) {
+        if (words[1] == DIRECTION_STRING[i]) {
             direction = (DIRECTION) i;
             break;
         }
     }
-
-    delete[] word1;
-    delete[] word2;
 
     return player_move_t(action, direction);
 }
@@ -242,19 +268,19 @@ int Host::run() {
     // todo : receive rules and game settings from hosting player
 
     // todo : remove nonexistent players
-    std::cerr << "host : init gamestate\n";
+    cerr << "host : init gamestate\n";
     _init_gamestate();
     _player_turn = 0;
 
     // todo : remove when remote setup is implemented {
-    std::cerr << "host : generate map\n";
+    cerr << "host : generate map\n";
     int ret = _gamestate->generate_map(5, 5);
 
     if (ret) {
-        std::cerr << "host : failed to generate map\n";
+        cerr << "host : failed to generate map\n";
         return 1;
     }
-    std::cerr << "host : map generation successful\n";
+    cerr << "host : map generation successful\n";
     //}
 
     _game_loop();

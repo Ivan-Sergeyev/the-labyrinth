@@ -37,7 +37,7 @@ class Gamestate {
     int save_map(const char *filename) const;
 
     // todo : move these to rules or host
-    bool _wound_other_players(int x, int y, int player_id);
+    OUTCOME _wound_other_players(int x, int y, int player_id);
     OUTCOME _try_shoot(int player_id, DIRECTION dir);
     OUTCOME _request_move(int player_id, player_move_t p_move);
 };

@@ -37,7 +37,7 @@ class ScreenHostLobby : public GeneralScreen {
         }
 
         // loop through all the results and connect to the first we can
-        for(p = servinfo; p != NULL; p = p->ai_next) {
+        for (p = servinfo; p != NULL; p = p->ai_next) {
             if ((host_socket_fd = socket(p->ai_family, p->ai_socktype,
                     p->ai_protocol)) == -1) {
                 perror("client : socket");
@@ -63,7 +63,7 @@ class ScreenHostLobby : public GeneralScreen {
                 s, sizeof s);
         std::cerr << "client : connecting to " << s << '\n';
 
-        freeaddrinfo(servinfo); // all done with this structure
+        freeaddrinfo(servinfo);  // all done with this structure
 
         return host_socket_fd;
     }
@@ -83,7 +83,7 @@ class ScreenHostLobby : public GeneralScreen {
 
         // parent process is client
 
-        // todo : use key to connect to host
+        // todo : use keys to connect to host?
         // todo : add hostname for remote connection
         int host_socket_fd = _connect_to_host();
         if (host_socket_fd < 0) {

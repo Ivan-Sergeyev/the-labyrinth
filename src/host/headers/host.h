@@ -1,11 +1,13 @@
 #ifndef SRC_HOST_HEADERS_HOST_H_
 #define SRC_HOST_HEADERS_HOST_H_
 
+#include <string>
 #include <vector>
 
 #include "socket_common.h"
 #include "gamestate.h"
 
+using std::string;
 using std::vector;
 
 
@@ -23,10 +25,6 @@ const char OUTCOME_STRING[OUT_NUMBER][OUTCOME_STR_MAX_LEN] = {
     "you kill another player",
     "you blow up a wall",
     "you fail to blow up a wall"
-};
-
-const char PLAYER_ACTION_STRING[ACT_NUMBER][6] = {
-    "skip", "move", "knife", "shoot", "bomb"
 };
 
 
@@ -58,12 +56,11 @@ class Host {
     // todo : setup loop
     // todo : change number of players
     // todo : change settings/rules
-    // todo : wait for new connections
-    // todo : add players
+    // todo : add other players
 
     void _game_loop();
 
-    player_move_t _parse_input(const char *str, int len) const;
+    player_move_t _parse_input(const vector<string> &words) const;
     // todo : remove copies of these from gamestate
     void _start_next_turn(OUTCOME outcome);
     bool _wound_other_players(int x, int y, int player_id);

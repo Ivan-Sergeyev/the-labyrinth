@@ -1,5 +1,5 @@
-#ifndef SRC_CLIENT_HEADERS_BOX_WINDOW_H_
-#define SRC_CLIENT_HEADERS_BOX_WINDOW_H_
+#ifndef SRC_CLIENT_HEADERS_UI_BOX_WINDOW_H_
+#define SRC_CLIENT_HEADERS_UI_BOX_WINDOW_H_
 
 #include <ncurses.h>
 
@@ -34,4 +34,4 @@ class BoxWindow {
     virtual void redraw() const {}
 };
 
-#endif  // SRC_CLIENT_HEADERS_BOX_WINDOW_H_
+#endif  // SRC_CLIENT_HEADERS_UI_BOX_WINDOW_H_

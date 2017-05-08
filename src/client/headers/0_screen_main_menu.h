@@ -1,6 +1,8 @@
 #ifndef SRC_CLIENT_HEADERS_0_SCREEN_MAIN_MENU_H_
 #define SRC_CLIENT_HEADERS_0_SCREEN_MAIN_MENU_H_
 
+#include <string>
+
 #include "general_screen.h"
 #include "1_screen_host_lobby.h"
 
@@ -10,7 +12,7 @@ class ScreenMainMenu : public GeneralScreen {
     enum MAIN_MENU_BUTTONS {
         MM_NEW_GAME = 0, MM_EXIT, MM_NUM_BUTTONS
     };
-    const char* const MENU_OPTIONS[MM_NUM_BUTTONS] = {"New Game", "Exit"};
+    const string MENU_OPTIONS[MM_NUM_BUTTONS] = {"Create New Game", "Exit"};
 
     void draw_menu(int highlight) {
         int height, width;
@@ -22,10 +24,10 @@ class ScreenMainMenu : public GeneralScreen {
         for (int i = 0; i < MM_NUM_BUTTONS; ++i) {
             if (i == highlight) {
                 attron(A_REVERSE);
-                mvprintw(y, x, MENU_OPTIONS[i]);
+                mvprintw(y, x, MENU_OPTIONS[i].c_str());
                 attroff(A_REVERSE);
             } else {
-                mvprintw(y, x, MENU_OPTIONS[i]);
+                mvprintw(y, x, MENU_OPTIONS[i].c_str());
             }
             ++y;
         }
@@ -37,14 +39,12 @@ class ScreenMainMenu : public GeneralScreen {
     ~ScreenMainMenu() {}
 
     GeneralScreen* loop() {
-        // todo : change argument from gamestate to host sockfd
-        GeneralScreen *next_screen;
-
         noecho();
 
         int key = 0;
         bool exit = false;
         int highlight = 0;
+        GeneralScreen *next_screen;
 
         while (1) {
             draw_menu(highlight);

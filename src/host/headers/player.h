@@ -26,9 +26,13 @@ enum PLAYER_HEALTH_STATE {
 
 enum PLAYER_ACTION {
     ACT_NONE = -1,
-    ACT_SKIP, ACT_MOVE,
+    ACT_SKIP = 0, ACT_MOVE,
     ACT_KNIFE, ACT_SHOOT, ACT_BOMB,
     ACT_NUMBER
+};
+
+const char PLAYER_ACTION_STRING[ACT_NUMBER][6] = {
+    "skip", "move", "knife", "shoot", "bomb"
 };
 
 
