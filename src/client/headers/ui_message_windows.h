@@ -3,89 +3,80 @@
 
 #include <string.h>
 
+#include <string>
+#include <vector>
+
 #include "ui_box_window.h"
+
+using std::string;
+using std::vector;
 
 
 class MessageHistoryBox : public BoxWindow {
  private:
     int _history_length;
-    int _message_max_length;
-    int _oldest_idx;
-    char **_history;
+    vector<string> _history;
 
  public:
-    MessageHistoryBox(int h, int w, int y, int x, int hstr_len, int msg_len) :
-            BoxWindow(h, w, y, x),
-            _history_length(hstr_len),
-            _message_max_length(msg_len),
-            _oldest_idx(0) {
-        _history = new char*[_history_length];
-        for (int i = 0; i < _history_length; ++i) {
-            _history[i] = new char[_message_max_length];
-            memset(_history[i], 0, _message_max_length);
-        }
-    }
+    MessageHistoryBox(int h, int w, int y, int x, int history_length) :
+        BoxWindow(h, w, y, x),
+        _history_length(history_length),
+        _history(history_length)
+    {}
 
     ~MessageHistoryBox() {
-        for (int i = 0; i < _history_length; ++i) {
-            delete[] _history[i];
-            _history[i] = nullptr;
-        }
-        delete[] _history;
-        _history = nullptr;
-
+        _history.resize(0);
         _history_length = 0;
-        _message_max_length = 0;
-        _oldest_idx = 0;
     }
 
     void redraw() const {
+        // todo : scroll history with pgup/pgdn
+        int history_size = _history.size();
+        int msg_idx;
+        int pos_col = 2;
+        int pos_row;
+
         for (int i = 0; i < _history_length; ++i) {
-            int history_out_y = i + _history_length - _oldest_idx;
-            history_out_y = history_out_y % _history_length;
-            mvwprintw(_window, 1 + history_out_y, 2, _history[i]);
+            pos_row = _history_length - i;
+            msg_idx = history_size - 1 - i;
+            mvwprintw(_window, pos_row, pos_col, _history[msg_idx].c_str());
         }
     }
 
-    void add_msg(const char *msg) {
-        strncpy(_history[_oldest_idx], msg, _message_max_length);
-        _oldest_idx = (_oldest_idx + 1) % _history_length;
+    void add_msg(const string msg) {
+        _history.push_back(msg);
     }
 };
 
 
 class MessageInputBox : public BoxWindow {
  private:
-    int _message_max_length;
-    char *_input_string;
+    int _max_message_length;
 
  public:
-    MessageInputBox(int h, int w, int y, int x, int msg_len) :
-            BoxWindow(h, w, y, x),
-            _message_max_length(msg_len),
-            _input_string(new char[_message_max_length]) {
-        memset(_input_string, 0, _message_max_length);
-    }
+    MessageInputBox(int h, int w, int y, int x, int max_message_length) :
+        BoxWindow(h, w, y, x),
+        _max_message_length(max_message_length)
+    {}
 
     ~MessageInputBox() {
-        delete[] _input_string;
-        _input_string = nullptr;
-        _message_max_length = 0;
+        _max_message_length = 0;
     }
 
-    int get_message_max_length() const {
-        return _message_max_length;
+    int get_max_message_length() const {
+        return _max_message_length;
     }
 
     void redraw() const {
         mvwprintw(_window, 1, 1, "> ");
     }
 
-    char *input() {
-        wgetnstr(_window, _input_string, _message_max_length - 1);
-        char *input = new char [_message_max_length];
-        strncpy(input, _input_string, _message_max_length);
-        return input;
+    string input() {
+        char *input_cstring = new char [_max_message_length];
+        wgetnstr(_window, input_cstring, _max_message_length - 1);
+        string input_string(input_cstring);
+        delete [] input_cstring;
+        return input_string;
     }
 };
 

@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 #include <cstring>
+#include <iostream>
 
 #include "general_screen.h"
 #include "ui_message_windows.h"
@@ -26,9 +27,9 @@ class ScreenGame : public GeneralScreen {
     int _host_socket_fd;
     int _player_id;
 
-    char *_get_outcome(char *msg, int len) {
+    string _get_outcome(string msg) {
         std::cerr << "client : send message \"" << msg << "\" to host\n";
-        int numbytes = send(_host_socket_fd, msg, len, 0);
+        int numbytes = send(_host_socket_fd, msg.c_str(), msg.length(), 0);
 
         char *buf = new char [MAXDATASIZE];
         numbytes = recv(_host_socket_fd, buf, MAXDATASIZE - 1, 0);
@@ -39,7 +40,9 @@ class ScreenGame : public GeneralScreen {
         }
         buf[numbytes] = '\0';
 
-        return buf;
+        string response(buf);
+        delete [] buf;
+        return response;
     }
 
  public:
@@ -82,11 +85,10 @@ class ScreenGame : public GeneralScreen {
 
         MessageInputBox _msg_in(mi_h, mi_w, mi_y, mi_x, _MAX_MSG_LEN);
 
-        MessageHistoryBox _msg_hstr(mh_h, mh_w, mh_y, mh_x,
-                                    _MAX_HISTORY_LEN, _MAX_MSG_LEN);
+        MessageHistoryBox _msg_hstr(mh_h, mh_w, mh_y, mh_x, _MAX_HISTORY_LEN);
 
         player_move_t p_move;
-        char *msg, *buf;
+        string msg, buf;
 
         while (1) {
             refresh();
@@ -95,21 +97,21 @@ class ScreenGame : public GeneralScreen {
             _msg_in.refresh();
 
             msg = _msg_in.input();
+            if (msg == "") {
+                continue;
+            }
 
             _msg_hstr.add_msg(msg);
             _msg_hstr.refresh();
 
-            buf = _get_outcome(msg, _MAX_MSG_LEN);
+            buf = _get_outcome(msg);
             _msg_hstr.add_msg(buf);
             _msg_hstr.refresh();
 
-            delete buf;
-            if (!strncmp(msg, "exit", _MAX_MSG_LEN)) {
-                delete msg;
+            if (msg == "exit") {
                 clear();
                 return nullptr;
             }
-            delete msg;
         }
     }
 };
